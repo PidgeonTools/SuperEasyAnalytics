@@ -42,7 +42,7 @@ bl_info = {
     "warning": "Checkout Gumroad for other Addons and more...",
     "wiki_url": "https://gumroad.com/blenderdefender",
     "tracker_url": "https://github.com/BlenderDefender/Blender-Analytics/issues",
-    "category": "Analytics"}
+    "category": "Analytics"
 }
 
 class Blender_Analytics_PT_main(bpy.types.Panel):
