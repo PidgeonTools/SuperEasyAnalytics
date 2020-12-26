@@ -1,0 +1,18 @@
+{
+    "default_cube": 1,
+    "start_time": [
+        7,
+        54,
+        23
+    ],
+    "date": [
+        26,
+        12,
+        2020
+    ],
+    "time_today": 0.04,
+    "time_yesterday": 0.0,
+    "dates_hours_alignment": {
+        "['Initial Value']": 0.0
+    }
+}

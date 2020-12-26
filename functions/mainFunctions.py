@@ -30,17 +30,16 @@ from .jsonFunctions import (
 )
 
 
-def check_for_cube(data):
+def check_for_cube(data, path):
     if data is 0:
         print("Default Cube deleted!")
-        path = p.join(p.dirname(__file__), "data.json")
+
         j = decode_json(path)
         j["default_cube"] += 1
         encode_json(j, path)
 
 
-def date_register():
-    path = p.join(p.dirname(__file__), "data.json")
+def date_register(path):
     j = decode_json(path)
     date = [time.localtime()[2], time.localtime()[1], time.localtime()[0]]
     current_time = [time.localtime()[3], time.localtime()[4], time.localtime()[5]]
@@ -56,8 +55,7 @@ def date_register():
     encode_json(j, path)
 
 
-def date_unregister():
-    path = p.join(p.dirname(__file__), "data.json")
+def date_unregister(path):
     j = decode_json(path)
 
     current_time = [time.localtime()[3], time.localtime()[4], time.localtime()[5]]
@@ -73,16 +71,13 @@ def date_unregister():
     encode_json(j, path)
 
 
-def get_yesterday():
-    path = p.join(p.dirname(__file__), "data.json")
+def get_yesterday(path):
     return decode_json(path)["time_yesterday"]
 
 
-def get_today():
-    path = p.join(p.dirname(__file__), "data.json")
+def get_today(path):
     return decode_json(path)["time_today"]
 
 
-def get_default_cubes():
-    path = p.join(p.dirname(__file__), "data.json")
+def get_default_cubes(path):
     return int(decode_json(path)["default_cube"])

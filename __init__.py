@@ -20,17 +20,24 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import bpy
+import os
+import shutil
+
+import json
+
 import queue
 from mathutils import *
 
-from . mainFunctions import (
+import requests
+
+from. import operators, prefs, panels
+
+from .functions.mainFunctions import (
     check_for_cube,
     date_register,
     date_unregister,
-    get_yesterday,
-    get_today,
-    get_default_cubes
 )
+from .functions.jsonFunctions import decode_json, encode_json
 
 bl_info = {
     "name": "Blender Analytics",
@@ -45,48 +52,85 @@ bl_info = {
     "category": "Analytics"
 }
 
-class Blender_Analytics_PT_main(bpy.types.Panel):
-    """Panel of the Blender Analytics Addon"""
-    bl_category = "View"
-    bl_idname = "Blender_Analytics_PT_main"
-    bl_label = "Blender Analytics"
-    
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-
-
-    def draw(self, context):
-        layout = self.layout
-        date_unregister()
-        layout.label(text= "Blender Usage:", icon = 'BLENDER')
-        layout.label(text= "Today, you've used Blender for {} hours".format(get_today()))
-        layout.label(text= "Yesterday, you've used Blender for {} hours".format(get_yesterday()))
-        layout.label(text= "")
-        layout.label(text= "Default Cubes:", icon="MESH_CUBE")
-        layout.label(text= "You've deleted {} default cubes so far.".format(get_default_cubes()))
-
-classes = (
-    Blender_Analytics_PT_main,
-)
-
 
 def register():
-    global t 
-    t = queue.threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users))
-    t.start()
+    prefs.register()
+    operators.register()
 
-    date_register()
+    global activate
+    activate = True
 
-    from bpy.utils import register_class
-    for cls in classes:
-        register_class(cls)
+    path = os.path.join(os.path.expanduser("~"), "Blender Addons Data", "blender-analytics")
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    if not os.path.exists(os.path.join(path, "data.json")):
+        shutil.copyfile(os.path.join(os.path.dirname(__file__),
+                                     "functions",
+                                     "data.json"),
+                        os.path.join(path,
+                                     "data.json"))
+    db_path = os.path.join(path, "Blender Analytics e6017460ea3479e67886f3430845.db")
+    if os.path.exists(db_path):
+        try:
+            with open(os.path.join(path, "Blender Analytics c704d36c50269763b8bce4479f.db"), "r") as f:
+                key = f.read()
+
+            permalink = "BlenderAnalytics"
+            data = json.loads(requests.post("https://api.gumroad.com/v2/licenses/verify",
+                                            data={"product_permalink": permalink,
+                                                  "license_key": key,
+                                                  "increment_uses_count": "false"}).text)
+            encode_json(data, db_path)
+            if not data["success"]:
+                activate = False
+        except:
+            data = decode_json(db_path)
+            if not data["success"]:
+                activate = False
+
+    else:
+        try:
+            with open(os.path.join(path, "Blender Analytics c704d36c50269763b8bce4479f.db"), "r") as f:
+                key = f.read()
+
+            permalink = "BlenderAnalytics"
+            data = json.loads(requests.post("https://api.gumroad.com/v2/licenses/verify",
+                                            data={"product_permalink": permalink,
+                                                  "license_key": key,
+                                                  "increment_uses_count": "false"}).text)
+            encode_json(data, db_path)
+            if not data["success"]:
+                activate = False
+
+        except:
+            activate = False
+
+    # print(activate)
+
+    if activate:
+        panels.register()
+
+        global t
+        t = queue.threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users,
+                                                             os.path.join(path, "data.json")))
+        t.start()
+
+        date_register(os.path.join(path, "data.json"))
+
 
 
 
 def unregister():
-    t.cancel()
-    date_unregister()
+    prefs.unregister()
+    operators.unregister()
 
-    from bpy.utils import unregister_class
-    for cls in reversed(classes):
-        unregister_class(cls)
+    if activate:
+        panels.unregister()
+
+        t.cancel()
+
+        path = os.path.join(os.path.expanduser("~"),
+                            "Blender Addons Data",
+                            "blender-analytics",
+                            "data.json")
+        date_unregister(path)
