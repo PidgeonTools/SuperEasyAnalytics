@@ -1,3 +1,5 @@
+blender-analytics_updater/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
