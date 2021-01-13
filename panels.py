@@ -23,6 +23,8 @@ class Blender_Analytics_PT_main(bpy.types.Panel):
 
     def draw(self, context):
 
+        addon_prefs = context.preferences.addons[__package__].preferences
+
         path = os.path.join(os.path.expanduser("~"),
                             "Blender Addons Data",
                             "blender-analytics",
@@ -33,10 +35,17 @@ class Blender_Analytics_PT_main(bpy.types.Panel):
         date_unregister(path)
         data = decode_json(db_path)
 
+        if addon_prefs.display_unit:
+            today = str(get_today(path)) + " minutes."
+            yesterday = str(get_yesterday(path)) + " minutes."
+        else:
+            today = str(round(get_today(path) / 60, 2)) + " hours."
+            yesterday = str(round(get_yesterday(path) / 60, 2)) + " hours."
+
         layout.label(text="Hello {}, here are your Blender Analytics:".format(data["purchase"]["How do you want to be called?"]))
         layout.label(text="Blender Usage:", icon='BLENDER')
-        layout.label(text="Today, you've used Blender for {} hours".format(get_today(path)))
-        layout.label(text="Yesterday, you've used Blender for {} hours".format(get_yesterday(path)))
+        layout.label(text="Today, you've used Blender for {}".format(today))
+        layout.label(text="Yesterday, you've used Blender for {}".format(yesterday))
         layout.label(text="")
         layout.label(text="Default Cubes:", icon="MESH_CUBE")
         layout.label(text="You've deleted {} default cubes so far.".format(get_default_cubes(path)))

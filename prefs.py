@@ -32,7 +32,7 @@ from .functions.blenderdefender_functions import url
 bl_info = {
     "name": "Blender Analytics",
     "author": "Blender Defender",
-    "version": (1, 0, 0),
+    "version": (1, 0, 1),
     "blender": (2, 83, 0),
     "location": "Sidebar (N) > View > Blender Analytics",
     "description": "Analyze your Blender behavior!",
@@ -81,6 +81,18 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
         max=59
     )
 
+    fast_startup = bpy.props.BoolProperty(
+        name="Fast Startup",
+        description="Ensures a fast startup of Blender. If enabled, your Gumroad Data (= Username, If you donated or not) won't be updated. If you want to update your Gumroad Data (after a donation), you have to temporarily disable this option.",
+        default=True
+    )
+
+    display_unit = bpy.props.BoolProperty(
+        name="Display Unit",
+        description="Switch between displaying in minutes or in hours",
+        default=True
+    )
+
     def draw(self, context):
         path = os.path.join(os.path.expanduser("~"), "Blender Addons Data", "blender-analytics")
         db_path = os.path.join(path, "Blender Analytics e6017460ea3479e67886f3430845.db")
@@ -106,6 +118,17 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
                 layout.label(text="Blender Analytics - You are using the donation version. Thank you :)", icon='FUND')
                 layout.operator("wm.url_open", text="Get discount code for cool Blender Products").url=url()
 
+        layout.label(text="")
+
+        if self.display_unit:
+            layout.prop(self, "display_unit", toggle=True, text="Active Display Unit: Minutes")
+        else:
+            layout.prop(self, "display_unit", toggle=True, text="Active Display Unit: Hours")
+
+        if self.fast_startup:
+            layout.prop(self, "fast_startup", toggle=True, text="Fast Startup: Activated")
+        else:
+            layout.prop(self, "fast_startup", toggle=True, text="Fast Startup: Deactivated")
 
         # col = layout.column() # works best if a column, or even just self.layout
         mainrow = layout.row()

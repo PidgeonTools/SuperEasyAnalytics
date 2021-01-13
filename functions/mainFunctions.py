@@ -64,8 +64,8 @@ def date_unregister(path):
     minutes = current_time[1] - j["start_time"][1]
     seconds = current_time[2] - j["start_time"][2]
 
-    total_hours = hours + (minutes / 60) + (seconds / 3600)
-    j["time_today"] += round(total_hours, 2)
+    total_minutes = (hours * 60) + minutes + round((seconds / 60))
+    j["time_today"] += round(total_minutes, 2)
     j["start_time"] = current_time
 
     encode_json(j, path)
@@ -81,3 +81,17 @@ def get_today(path):
 
 def get_default_cubes(path):
     return int(decode_json(path)["default_cube"])
+
+
+def update_json(path):
+    j = decode_json(path)
+
+    j["check_update"] = 101
+
+    for i in j["dates_hours_alignment"]:
+        j["dates_hours_alignment"][i] = round(j["dates_hours_alignment"][i] * 60, 2)
+
+    j["time_yesterday"] = round(j["time_yesterday"] * 60, 2)
+    j["time_today"] = round(j["time_today"] * 60, 2)
+
+    encode_json(j, path)

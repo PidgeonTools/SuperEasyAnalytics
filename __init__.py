@@ -36,13 +36,14 @@ from .functions.mainFunctions import (
     check_for_cube,
     date_register,
     date_unregister,
+    update_json,
 )
 from .functions.jsonFunctions import decode_json, encode_json
 
 bl_info = {
     "name": "Blender Analytics",
     "author": "Blender Defender",
-    "version": (1, 0, 0),
+    "version": (1, 0, 1),
     "blender": (2, 83, 0),
     "location": "Sidebar (N) > View > Blender Analytics",
     "description": "Analyze your Blender behavior!",
@@ -57,36 +58,52 @@ def register():
     prefs.register()
     operators.register()
 
+    addon_prefs = bpy.context.preferences.addons[__package__].preferences
+
     global activate
     activate = True
 
     path = os.path.join(os.path.expanduser("~"), "Blender Addons Data", "blender-analytics")
     if not os.path.isdir(path):
         os.makedirs(path)
-    if not os.path.exists(os.path.join(path, "data.json")):
+
+    if os.path.exists(os.path.join(path, "data.json")):
+        try:
+            j = decode_json(os.path.join(path, "data.json"))
+            print(j["check_update"])
+
+        except:
+            update_json(os.path.join(path, "data.json"))
+    else:
         shutil.copyfile(os.path.join(os.path.dirname(__file__),
                                      "functions",
                                      "data.json"),
                         os.path.join(path,
                                      "data.json"))
+
     db_path = os.path.join(path, "Blender Analytics e6017460ea3479e67886f3430845.db")
     if os.path.exists(db_path):
-        try:
-            with open(os.path.join(path, "Blender Analytics c704d36c50269763b8bce4479f.db"), "r") as f:
-                key = f.read()
-
-            permalink = "BlenderAnalytics"
-            data = json.loads(requests.post("https://api.gumroad.com/v2/licenses/verify",
-                                            data={"product_permalink": permalink,
-                                                  "license_key": key,
-                                                  "increment_uses_count": "false"}).text)
-            encode_json(data, db_path)
-            if not data["success"]:
-                activate = False
-        except:
+        if addon_prefs.fast_startup:
             data = decode_json(db_path)
             if not data["success"]:
                 activate = False
+        else:
+            try:
+                with open(os.path.join(path, "Blender Analytics c704d36c50269763b8bce4479f.db"), "r") as f:
+                    key = f.read()
+
+                permalink = "BlenderAnalytics"
+                data = json.loads(requests.post("https://api.gumroad.com/v2/licenses/verify",
+                                                data={"product_permalink": permalink,
+                                                      "license_key": key,
+                                                      "increment_uses_count": "false"}).text)
+                encode_json(data, db_path)
+                if not data["success"]:
+                    activate = False
+            except:
+                data = decode_json(db_path)
+                if not data["success"]:
+                    activate = False
 
     else:
         try:
