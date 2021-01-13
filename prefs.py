@@ -43,7 +43,7 @@ bl_info = {
 }
 
 
-class DemoPreferences(bpy.types.AddonPreferences):
+class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
     # addon updater preferences
@@ -127,8 +127,9 @@ class DemoPreferences(bpy.types.AddonPreferences):
         # col.operator("wm.url_open","Open webpage ").url=addon_updater_ops.updater.website
 
 
+
 classes = (
-    DemoPreferences,
+    BlenderAnalytics_APT_Preferences,
 )
 
 

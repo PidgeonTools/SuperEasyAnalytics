@@ -50,7 +50,7 @@ def date_register(path):
         j["date"] = date
         j["time_yesterday"] = j["time_today"]
         j["time_today"] = 0.00
-    
+
     j["start_time"] = current_time
     encode_json(j, path)
 

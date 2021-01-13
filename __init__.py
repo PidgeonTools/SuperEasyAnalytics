@@ -105,8 +105,6 @@ def register():
         except:
             activate = False
 
-    # print(activate)
-
     if activate:
         panels.register()
 
@@ -116,8 +114,6 @@ def register():
         t.start()
 
         date_register(os.path.join(path, "data.json"))
-
-
 
 
 def unregister():

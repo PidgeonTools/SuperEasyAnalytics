@@ -13,9 +13,9 @@ class BLENDERANALYTICS_OT_verify_license(bpy.types.Operator):
     bl_label = "Enter your License Key"
 
     license_key = bpy.props.StringProperty(
-    name='License Key',
-    description="Enter the license key you received via E-Mail",
-    default=""
+        name='License Key',
+        description="Enter the license key you received via E-Mail",
+        default=""
     )
 
     def execute(self, context):
@@ -54,9 +54,11 @@ class BLENDERANALYTICS_OT_verify_license(bpy.types.Operator):
         layout.label(text="Please enter your License Key.")
         layout.label(text="Don't worry, the addon is free and remains free forever!")
 
+
 classes = (
-     BLENDERANALYTICS_OT_verify_license,
+    BLENDERANALYTICS_OT_verify_license,
 )
+
 
 def register():
 
