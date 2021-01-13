@@ -1,18 +1,19 @@
 {
-    "default_cube": 1,
+    "default_cube": 0,
     "start_time": [
-        7,
-        54,
-        23
+        0,
+        0,
+        0
     ],
     "date": [
-        26,
-        12,
-        2020
+        0,
+        0,
+        0
     ],
-    "time_today": 0.04,
-    "time_yesterday": 0.0,
+    "time_today": 0,
+    "time_yesterday": 0,
     "dates_hours_alignment": {
-        "['Initial Value']": 0.0
-    }
+        "['Note: This means minutes since version 1.0.1']": 0.0
+    },
+    "check_update": 101
 }
