@@ -100,6 +100,9 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
         layout = self.layout
 
         if not os.path.exists(db_path):
+            layout.label(text="One step left:")
+            layout.label(text="Enter your license key (you should have received one via E-Mail) to make the Addon work.")
+            layout.label(text="")
             layout.label(text="Don't worry, this addon is free forever.")
             layout.label(text="But in order for you to give advantages if you donated, we have to verify your purchase.")
             layout.operator("blender_analytics.license_key")
