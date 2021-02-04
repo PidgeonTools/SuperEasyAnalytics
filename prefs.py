@@ -29,20 +29,6 @@ from .functions.jsonFunctions import decode_json
 from .functions.blenderdefender_functions import url
 
 
-bl_info = {
-    "name": "Blender Analytics",
-    "author": "Blender Defender",
-    "version": (1, 0, 1),
-    "blender": (2, 83, 0),
-    "location": "Sidebar (N) > View > Blender Analytics",
-    "description": "Analyze your Blender behavior!",
-    "warning": "Checkout Gumroad for other Addons and more...",
-    "wiki_url": "https://gumroad.com/blenderdefender",
-    "tracker_url": "https://github.com/BlenderDefender/Blender-Analytics/issues",
-    "category": "Analytics"
-}
-
-
 class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
@@ -159,7 +145,7 @@ classes = (
 )
 
 
-def register():
+def register(bl_info):
     # addon updater code and configurations
     # in case of broken version, try to register the updater first
     # so that users can revert back to a working version

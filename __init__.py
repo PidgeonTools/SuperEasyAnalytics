@@ -55,7 +55,7 @@ bl_info = {
 
 
 def register():
-    prefs.register()
+    prefs.register(bl_info)
     operators.register()
 
     addon_prefs = bpy.context.preferences.addons[__package__].preferences
