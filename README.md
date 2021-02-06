@@ -1,5 +1,7 @@
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate?hosted_button_id=TV9HL7YRHZR7U)  
-
+![GitHub](https://img.shields.io/github/license/BlenderDefender/Blender-Analytics?color=green&style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/BlenderDefender/Blender-Analytics?style=for-the-badge)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/BlenderDefender/Blender-Analytics?style=for-the-badge)
 # Blender-Analytics
 Analyze your Blender behavior. Want to spend more time with Blender and know how long you use Blender every day?
 With Blender Analytics, you can see how long you use Blender in real-time. Motivate yourself to reach your goals. 
