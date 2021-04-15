@@ -1,4 +1,4 @@
-[![Donate](https://img.shields.io/badge/DONATE!%20Funding%20Goal%3A%20%24140%20(1%20Day%20Developer%20Time)-%245-red?style=for-the-badge&logo=paypal)](https://www.paypal.com/donate?hosted_button_id=TPH9D4NXRDP9Y)  
+[![Donate](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FBlenderDefender%2FBlenderDefender%2Fshields_endpoint%2FBLENDERANALYTICS.json)](https://www.paypal.com/donate?hosted_button_id=TPH9D4NXRDP9Y)
 ![GitHub](https://img.shields.io/github/license/BlenderDefender/Blender-Analytics?color=green&style=for-the-badge)
 ![GitHub issues](https://img.shields.io/github/issues/BlenderDefender/Blender-Analytics?style=for-the-badge)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/BlenderDefender/Blender-Analytics?style=for-the-badge)
