@@ -42,7 +42,8 @@ def check_for_cube(data, path):
 def date_register(path):
     j = decode_json(path)
     date = [time.localtime()[2], time.localtime()[1], time.localtime()[0]]
-    current_time = [time.localtime()[3], time.localtime()[4], time.localtime()[5]]
+    current_time = [time.localtime()[3], time.localtime()[
+        4], time.localtime()[5]]
 
     if j["date"] != date:
         j_date = str(j["date"])
@@ -58,13 +59,16 @@ def date_register(path):
 def date_unregister(path):
     j = decode_json(path)
 
-    current_time = [time.localtime()[3], time.localtime()[4], time.localtime()[5]]
+    current_time = [time.localtime()[3], time.localtime()[
+        4], time.localtime()[5]]
 
     hours = current_time[0] - j["start_time"][0]
     minutes = current_time[1] - j["start_time"][1]
     seconds = current_time[2] - j["start_time"][2]
 
     total_minutes = (hours * 60) + minutes + round((seconds / 60))
+    if total_minutes < 0:
+        total_minutes += 24 * 60
     j["time_today"] += round(total_minutes, 2)
     j["start_time"] = current_time
 
@@ -89,7 +93,8 @@ def update_json(path):
     j["check_update"] = 101
 
     for i in j["dates_hours_alignment"]:
-        j["dates_hours_alignment"][i] = round(j["dates_hours_alignment"][i] * 60, 2)
+        j["dates_hours_alignment"][i] = round(
+            j["dates_hours_alignment"][i] * 60, 2)
 
     j["time_yesterday"] = round(j["time_yesterday"] * 60, 2)
     j["time_today"] = round(j["time_today"] * 60, 2)
