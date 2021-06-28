@@ -19,6 +19,13 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+from .functions.mainFunctions import (
+    check_for_cube,
+    date_register,
+    date_unregister,
+    update_json,
+)
+from .functions.jsonFunctions import decode_json, encode_json
 import bpy
 import os
 import shutil
@@ -32,18 +39,11 @@ import requests
 
 from. import operators, prefs, panels
 
-from .functions.mainFunctions import (
-    check_for_cube,
-    date_register,
-    date_unregister,
-    update_json,
-)
-from .functions.jsonFunctions import decode_json, encode_json
 
 bl_info = {
     "name": "Blender Analytics",
     "author": "Blender Defender",
-    "version": (1, 0, 1),
+    "version": (1, 0, 2),
     "blender": (2, 83, 0),
     "location": "Sidebar (N) > View > Blender Analytics",
     "description": "Analyze your Blender behavior!",
@@ -63,7 +63,8 @@ def register():
     global activate
     activate = True
 
-    path = os.path.join(os.path.expanduser("~"), "Blender Addons Data", "blender-analytics")
+    path = os.path.join(os.path.expanduser(
+        "~"), "Blender Addons Data", "blender-analytics")
     if not os.path.isdir(path):
         os.makedirs(path)
 
@@ -81,7 +82,8 @@ def register():
                         os.path.join(path,
                                      "data.json"))
 
-    db_path = os.path.join(path, "Blender Analytics e6017460ea3479e67886f3430845.db")
+    db_path = os.path.join(
+        path, "Blender Analytics e6017460ea3479e67886f3430845.db")
     if os.path.exists(db_path):
         if addon_prefs.fast_startup:
             data = decode_json(db_path)
