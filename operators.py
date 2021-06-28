@@ -12,7 +12,7 @@ class BLENDERANALYTICS_OT_verify_license(bpy.types.Operator):
     bl_idname = "blender_analytics.license_key"
     bl_label = "Enter your License Key"
 
-    license_key = bpy.props.StringProperty(
+    license_key: bpy.props.StringProperty(
         name='License Key',
         description="Enter the license key you received via E-Mail",
         default=""

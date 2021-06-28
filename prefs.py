@@ -34,32 +34,32 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
 
     # addon updater preferences
 
-    auto_check_update = bpy.props.BoolProperty(
+    auto_check_update: bpy.props.BoolProperty(
         name="Auto-check for Update",
         description="If enabled, auto-check for updates using an interval",
         default=True,
     )
-    updater_intrval_months = bpy.props.IntProperty(
+    updater_intrval_months: bpy.props.IntProperty(
         name='Months',
         description="Number of months between checking for updates",
         default=0,
         min=0
     )
-    updater_intrval_days = bpy.props.IntProperty(
+    updater_intrval_days: bpy.props.IntProperty(
         name='Days',
         description="Number of days between checking for updates",
         default=7,
         min=0,
         max=31
     )
-    updater_intrval_hours = bpy.props.IntProperty(
+    updater_intrval_hours: bpy.props.IntProperty(
         name='Hours',
         description="Number of hours between checking for updates",
         default=0,
         min=0,
         max=23
     )
-    updater_intrval_minutes = bpy.props.IntProperty(
+    updater_intrval_minutes: bpy.props.IntProperty(
         name='Minutes',
         description="Number of minutes between checking for updates",
         default=0,
@@ -67,13 +67,13 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
         max=59
     )
 
-    fast_startup = bpy.props.BoolProperty(
+    fast_startup: bpy.props.BoolProperty(
         name="Fast Startup",
         description="Ensures a fast startup of Blender. If enabled, your Gumroad Data (= Username, If you donated or not) won't be updated. If you want to update your Gumroad Data (after a donation), you have to temporarily disable this option.",
         default=True
     )
 
-    display_unit = bpy.props.BoolProperty(
+    display_unit: bpy.props.BoolProperty(
         name="Display Unit",
         description="Switch between displaying in minutes or in hours",
         default=True
