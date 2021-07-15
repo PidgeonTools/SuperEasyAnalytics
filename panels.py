@@ -1,15 +1,14 @@
 import bpy
+
 import os
+from os import path as p
 
 from .functions.mainFunctions import (
-    check_for_cube,
-    date_register,
     date_unregister,
     get_yesterday,
     get_today,
     get_default_cubes
 )
-from .functions.jsonFunctions import decode_json
 
 
 class Blender_Analytics_PT_main(bpy.types.Panel):
@@ -22,19 +21,20 @@ class Blender_Analytics_PT_main(bpy.types.Panel):
     bl_region_type = 'UI'
 
     def draw(self, context):
-
         addon_prefs = context.preferences.addons[__package__].preferences
 
-        path = os.path.join(os.path.expanduser("~"),
-                            "Blender Addons Data",
-                            "blender-analytics",
-                            "data.json")
-        db_path = os.path.join(os.path.dirname(path), "Blender Analytics e6017460ea3479e67886f3430845.db")
+        # Path to the Blender Analytics Data.
+        path = p.join(p.expanduser("~"),
+                      "Blender Addons Data",
+                      "blender-analytics",
+                      "data.json")
 
         layout = self.layout
-        date_unregister(path)
-        data = decode_json(db_path)
 
+        # First, calculate the usage time.
+        date_unregister(path)
+
+        # Manipulate the time based on the display settings.
         if addon_prefs.display_unit:
             today = str(get_today(path)) + " minutes."
             yesterday = str(get_yesterday(path)) + " minutes."
@@ -42,13 +42,22 @@ class Blender_Analytics_PT_main(bpy.types.Panel):
             today = str(round(get_today(path) / 60, 2)) + " hours."
             yesterday = str(round(get_yesterday(path) / 60, 2)) + " hours."
 
-        layout.label(text="Hello {}, here are your Blender Analytics:".format(data["purchase"]["How do you want to be called?"]))
+        # Generic Display text.
+        username = p.basename(p.expanduser("~"))
+        layout.label(
+            text=f"Hello {username}, here are your Blender Analytics:")
+
         layout.label(text="Blender Usage:", icon='BLENDER')
-        layout.label(text="Today, you've used Blender for {}".format(today))
-        layout.label(text="Yesterday, you've used Blender for {}".format(yesterday))
+
+        # Blender Usage Display text.
+        layout.label(text=f"Today, you've used Blender for {today}")
+        layout.label(text=f"Yesterday, you've used Blender for {yesterday}")
         layout.label(text="")
+
+        # Default Cubes Display text.
         layout.label(text="Default Cubes:", icon="MESH_CUBE")
-        layout.label(text="You've deleted {} default cubes so far.".format(get_default_cubes(path)))
+        layout.label(
+            text=f"You've deleted {get_default_cubes(path)} default cubes so far.")
 
 
 classes = (

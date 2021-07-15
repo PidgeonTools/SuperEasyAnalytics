@@ -19,9 +19,9 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-import bpy
 import time
 
+import os
 from os import path as p
 
 from .jsonFunctions import (
@@ -30,6 +30,7 @@ from .jsonFunctions import (
 )
 
 
+# Check, if the default cube has been deleted.
 def check_for_cube(data, path):
     if data is 0:
         print("Default Cube deleted!")
@@ -39,6 +40,7 @@ def check_for_cube(data, path):
         encode_json(j, path)
 
 
+# Save the date and time on Blender Startup.
 def date_register(path):
     j = decode_json(path)
     date = [time.localtime()[2], time.localtime()[1], time.localtime()[0]]
@@ -56,6 +58,8 @@ def date_register(path):
     encode_json(j, path)
 
 
+# Save the difference between the start date/time and the end date/time as Blender usage time.
+# Save the current date/time as new start date/time.
 def date_unregister(path):
     j = decode_json(path)
 
@@ -75,19 +79,23 @@ def date_unregister(path):
     encode_json(j, path)
 
 
+# Get the usage time from yesterday.
 def get_yesterday(path):
     return decode_json(path)["time_yesterday"]
 
 
+# Get the usage time from today.
 def get_today(path):
     return decode_json(path)["time_today"]
 
 
+# Get the count of deleted default cubes.
 def get_default_cubes(path):
     return int(decode_json(path)["default_cube"])
 
 
-def update_json(path):
+# Update the data to version 1.0.1!
+def update_json101(path):
     j = decode_json(path)
 
     j["check_update"] = 101
@@ -100,3 +108,31 @@ def update_json(path):
     j["time_today"] = round(j["time_today"] * 60, 2)
 
     encode_json(j, path)
+
+
+# Update the data to version 1.1.0!
+def update_json_and_data110(path):
+    j = decode_json(path)
+
+    j["check_update"] = 110
+
+    encode_json(j, path)
+
+    db_filenames = ["Blender Analytics c704d36c50269763b8bce4479f.db",
+                    "Blender Analytics e6017460ea3479e67886f3430845.db"]
+
+    for file in db_filenames:
+        file = p.join(p.dirname(path), file)
+        if p.exists(file):
+            os.remove(file)
+
+
+# Checks the version of the JSON Data file and updates, if necessary.
+def update_json(path):
+    j = decode_json(path)
+
+    if not "check_update" in j.keys():
+        update_json101(path)
+
+    if j["check_update"] == 101:
+        update_json_and_data110(path)

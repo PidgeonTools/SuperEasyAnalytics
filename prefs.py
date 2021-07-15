@@ -20,13 +20,11 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import bpy
+
 import os
+from os import path as p
 
 from . import addon_updater_ops
-from . import operators
-
-from .functions.jsonFunctions import decode_json
-from .functions.blenderdefender_functions import url
 
 
 class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
@@ -67,12 +65,6 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
         max=59
     )
 
-    fast_startup: bpy.props.BoolProperty(
-        name="Fast Startup",
-        description="Ensures a fast startup of Blender. If enabled, your Gumroad Data (= Username, If you donated or not) won't be updated. If you want to update your Gumroad Data (after a donation), you have to temporarily disable this option.",
-        default=True
-    )
-
     display_unit: bpy.props.BoolProperty(
         name="Display Unit",
         description="Switch between displaying in minutes or in hours",
@@ -80,44 +72,18 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
     )
 
     def draw(self, context):
-        path = os.path.join(os.path.expanduser("~"), "Blender Addons Data", "blender-analytics")
-        db_path = os.path.join(path, "Blender Analytics e6017460ea3479e67886f3430845.db")
-
         layout = self.layout
 
-        if not os.path.exists(db_path):
-            layout.label(text="One step left:")
-            layout.label(text="Enter your license key (you should have received one via E-Mail) to make the Addon work.")
-            layout.label(text="")
-            layout.label(text="Don't worry, this addon is free forever.")
-            layout.label(text="But in order for you to give advantages if you donated, we have to verify your purchase.")
-            layout.operator("blender_analytics.license_key")
-        else:
-            data = decode_json(db_path)
-
-            layout.label(text="Hello {}, here are your Addon Preferences:".format(data["purchase"]["How do you want to be called?"]))
-
-            if data["purchase"]["price"] <= 0:
-                layout.operator("wm.url_open", text="Checkout Gumroad for other addons and more...").url = "https://gumroad.com/blenderdefender"
-                layout.label(text="Blender Analytics - You are using the free version.")
-                layout.label(text="If you want to support me and get cool discount codes, please")
-                layout.label(text="upgrade to donation version by purchasing again and leaving a tip. :)")
-                layout.operator("wm.url_open", text="Upgrade", icon='FUND').url = "https://gumroad.com/l/BlenderAnalytics"
-            elif data["purchase"]["price"] > 0:
-                layout.label(text="Blender Analytics - You are using the donation version. Thank you :)", icon='FUND')
-                layout.operator("wm.url_open", text="Get discount code for cool Blender Products").url=url()
-
-        layout.label(text="")
+        username = p.basename(p.expanduser("~"))
+        layout.label(
+            text=f"Hello {username}, here are your Addon Preferences:")
 
         if self.display_unit:
-            layout.prop(self, "display_unit", toggle=True, text="Active Display Unit: Minutes")
+            layout.prop(self, "display_unit", toggle=True,
+                        text="Active Display Unit: Minutes")
         else:
-            layout.prop(self, "display_unit", toggle=True, text="Active Display Unit: Hours")
-
-        if self.fast_startup:
-            layout.prop(self, "fast_startup", toggle=True, text="Fast Startup: Activated")
-        else:
-            layout.prop(self, "fast_startup", toggle=True, text="Fast Startup: Deactivated")
+            layout.prop(self, "display_unit", toggle=True,
+                        text="Active Display Unit: Hours")
 
         # col = layout.column() # works best if a column, or even just self.layout
         mainrow = layout.row()
@@ -139,7 +105,6 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
         # col.operator("wm.url_open","Open webpage ").url=addon_updater_ops.updater.website
 
 
-
 classes = (
     BlenderAnalytics_APT_Preferences,
 )
@@ -150,17 +115,16 @@ def register(bl_info):
     # in case of broken version, try to register the updater first
     # so that users can revert back to a working version
     addon_updater_ops.register(bl_info)
-    # operators.register()
     # register the example panel, to show updater buttons
     for cls in classes:
-        addon_updater_ops.make_annotations(cls)  # to avoid blender 2.8 warnings
+        addon_updater_ops.make_annotations(
+            cls)  # to avoid blender 2.8 warnings
         bpy.utils.register_class(cls)
 
 
 def unregister():
     # addon updater unregister
     addon_updater_ops.unregister()
-    # operators.unregister()
     # register the example panel, to show updater buttons
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

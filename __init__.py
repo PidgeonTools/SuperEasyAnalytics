@@ -25,127 +25,76 @@ from .functions.mainFunctions import (
     date_unregister,
     update_json,
 )
-from .functions.jsonFunctions import decode_json, encode_json
 import bpy
+
 import os
+from os import path as p
+
 import shutil
 
-import json
-
 import queue
-from mathutils import *
 
-import requests
-
-from. import operators, prefs, panels
+from . import prefs, panels
+from .functions.jsonFunctions import decode_json
 
 
 bl_info = {
     "name": "Blender Analytics",
     "author": "Blender Defender",
-    "version": (1, 0, 2),
+    "version": (1, 1, 0),
     "blender": (2, 83, 0),
     "location": "Sidebar (N) > View > Blender Analytics",
     "description": "Analyze your Blender behavior!",
     "warning": "Checkout Gumroad for other Addons and more...",
     "wiki_url": "https://gumroad.com/blenderdefender",
     "tracker_url": "https://github.com/BlenderDefender/Blender-Analytics/issues",
+    "endpoint_url": "https://raw.githubusercontent.com/BlenderDefender/BlenderDefender/updater_endpoints/BLENDERANALYTICS.json",
     "category": "Analytics"
 }
 
 
 def register():
     prefs.register(bl_info)
-    operators.register()
+    panels.register()
 
-    addon_prefs = bpy.context.preferences.addons[__package__].preferences
-
-    global activate
-    activate = True
-
-    path = os.path.join(os.path.expanduser(
+    # Path to the Blender Analytics Data directory.
+    path = p.join(p.expanduser(
         "~"), "Blender Addons Data", "blender-analytics")
-    if not os.path.isdir(path):
+
+    # Create the Blender Analytics Data Directory, if it doesn't exist already.
+    if not p.isdir(path):
         os.makedirs(path)
 
-    if os.path.exists(os.path.join(path, "data.json")):
-        try:
-            j = decode_json(os.path.join(path, "data.json"))
-            print(j["check_update"])
+    # Update the JSON Data file, if it doesn't work with the latest version of Blender Analytics.
+    if p.exists(p.join(path, "data.json")):
+        update_json(p.join(path, "data.json"))
+    else:  # Copy data.json to the Blender Analytics Data directory, if it doesn't already exist.
+        shutil.copyfile(p.join(p.dirname(__file__),
+                               "functions",
+                               "data.json"),
+                        p.join(path,
+                               "data.json"))
 
-        except:
-            update_json(os.path.join(path, "data.json"))
-    else:
-        shutil.copyfile(os.path.join(os.path.dirname(__file__),
-                                     "functions",
-                                     "data.json"),
-                        os.path.join(path,
-                                     "data.json"))
+    # Start the default cube counter.
+    global t
+    t = queue.threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users,
+                                                         p.join(path, "data.json")))
+    t.start()
 
-    db_path = os.path.join(
-        path, "Blender Analytics e6017460ea3479e67886f3430845.db")
-    if os.path.exists(db_path):
-        if addon_prefs.fast_startup:
-            data = decode_json(db_path)
-            if not data["success"]:
-                activate = False
-        else:
-            try:
-                with open(os.path.join(path, "Blender Analytics c704d36c50269763b8bce4479f.db"), "r") as f:
-                    key = f.read()
-
-                permalink = "BlenderAnalytics"
-                data = json.loads(requests.post("https://api.gumroad.com/v2/licenses/verify",
-                                                data={"product_permalink": permalink,
-                                                      "license_key": key,
-                                                      "increment_uses_count": "false"}).text)
-                encode_json(data, db_path)
-                if not data["success"]:
-                    activate = False
-            except:
-                data = decode_json(db_path)
-                if not data["success"]:
-                    activate = False
-
-    else:
-        try:
-            with open(os.path.join(path, "Blender Analytics c704d36c50269763b8bce4479f.db"), "r") as f:
-                key = f.read()
-
-            permalink = "BlenderAnalytics"
-            data = json.loads(requests.post("https://api.gumroad.com/v2/licenses/verify",
-                                            data={"product_permalink": permalink,
-                                                  "license_key": key,
-                                                  "increment_uses_count": "false"}).text)
-            encode_json(data, db_path)
-            if not data["success"]:
-                activate = False
-
-        except:
-            activate = False
-
-    if activate:
-        panels.register()
-
-        global t
-        t = queue.threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users,
-                                                             os.path.join(path, "data.json")))
-        t.start()
-
-        date_register(os.path.join(path, "data.json"))
+    # Save the date/time at startup.
+    date_register(p.join(path, "data.json"))
 
 
 def unregister():
     prefs.unregister()
-    operators.unregister()
+    panels.unregister()
 
-    if activate:
-        panels.unregister()
+    # Stop the default cube counter to avoid errors.
+    t.cancel()
 
-        t.cancel()
-
-        path = os.path.join(os.path.expanduser("~"),
-                            "Blender Addons Data",
-                            "blender-analytics",
-                            "data.json")
-        date_unregister(path)
+    # Write the usage time to data.json!
+    path = p.join(p.expanduser("~"),
+                  "Blender Addons Data",
+                  "blender-analytics",
+                  "data.json")
+    date_unregister(path)
