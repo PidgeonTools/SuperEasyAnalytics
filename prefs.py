@@ -104,6 +104,11 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
         # col.scale_y = 2
         # col.operator("wm.url_open","Open webpage ").url=addon_updater_ops.updater.website
 
+        layout.separator()
+        col = layout.column()
+        op = col.operator("wm.url_open", text="Support", icon="URL")
+        op.url = "https://discord.gg/853VrMEGPM"
+
 
 classes = (
     BlenderAnalytics_APT_Preferences,
