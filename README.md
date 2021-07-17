@@ -15,6 +15,3 @@ to make an addon that counts how many default cubes you have deleted.
 More features:
 Any feature missing? Help me optimize my addons. Go to https://github.com/BlenderDefender/Blender-Analytics/issues/new?template=feature_request.md
 to make a suggestion. I will look at it as soon as possible and add it if possible.
-
-In order to use this addon, you have to go to [Gumroad](https://gumroad.com/l/BlenderAnalytics) and get it for free. 
-This is for making it possible to call you by name and to give advantages if you donated.
