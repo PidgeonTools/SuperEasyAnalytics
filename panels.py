@@ -11,11 +11,11 @@ from .functions.mainFunctions import (
 )
 
 
-class Blender_Analytics_PT_main(bpy.types.Panel):
-    """Panel of the Blender Analytics Addon"""
+class SUPERBLENDERANALYTICS_PT_main(bpy.types.Panel):
+    """Panel of the Super Blender Analytics Addon"""
     bl_category = "View"
-    bl_idname = "Blender_Analytics_PT_main"
-    bl_label = "Blender Analytics"
+    bl_idname = "SUPERBLENDERANALYTICS_PT_main"
+    bl_label = "Super Blender Analytics"
 
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -23,7 +23,7 @@ class Blender_Analytics_PT_main(bpy.types.Panel):
     def draw(self, context):
         addon_prefs = context.preferences.addons[__package__].preferences
 
-        # Path to the Blender Analytics Data.
+        # Path to the Super Blender Analytics Data.
         path = p.join(p.expanduser("~"),
                       "Blender Addons Data",
                       "blender-analytics",
@@ -45,7 +45,7 @@ class Blender_Analytics_PT_main(bpy.types.Panel):
         # Generic Display text.
         username = p.basename(p.expanduser("~"))
         layout.label(
-            text=f"Hello {username}, here are your Blender Analytics:")
+            text=f"Hello {username}, here are your Super Blender Analytics:")
 
         layout.label(text="Blender Usage:", icon='BLENDER')
 
@@ -61,7 +61,7 @@ class Blender_Analytics_PT_main(bpy.types.Panel):
 
 
 classes = (
-    Blender_Analytics_PT_main,
+    SUPERBLENDERANALYTICS_PT_main,
 )
 
 
