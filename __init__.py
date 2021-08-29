@@ -41,7 +41,7 @@ from .functions.jsonFunctions import decode_json
 bl_info = {
     "name": "Super Easy Analytics (SEA)",
     "author": "Blender Defender",
-    "version": (1, 1, 0),
+    "version": (1, 2, 0),
     "blender": (2, 83, 0),
     "location": "Sidebar (N) > View > Super Easy Analytics",
     "description": "Analyze your Blender behavior!",
