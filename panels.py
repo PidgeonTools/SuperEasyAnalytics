@@ -7,6 +7,7 @@ from .functions.mainFunctions import (
     date_unregister,
     get_yesterday,
     get_today,
+    get_last_week,
     get_default_cubes
 )
 
@@ -38,20 +39,24 @@ class SUPERBLENDERANALYTICS_PT_main(bpy.types.Panel):
         if addon_prefs.display_unit:
             today = str(get_today(path)) + " minutes."
             yesterday = str(get_yesterday(path)) + " minutes."
+            last_week = str(get_last_week(path)) + " minutes."
         else:
             today = str(round(get_today(path) / 60, 2)) + " hours."
             yesterday = str(round(get_yesterday(path) / 60, 2)) + " hours."
+            last_week = str(round(get_last_week(path) / 60, 2)) + " hours."
 
         # Generic Display text.
         username = p.basename(p.expanduser("~"))
         layout.label(
-            text=f"Hello {username}, here are your Super Blender Analytics:")
+            text=f"Hello {username}, here are your Super Easy Analytics:")
 
         layout.label(text="Blender Usage:", icon='BLENDER')
 
         # Blender Usage Display text.
         layout.label(text=f"Today, you've used Blender for {today}")
         layout.label(text=f"Yesterday, you've used Blender for {yesterday}")
+        layout.label(
+            text=f"During the last week, you've used Blender for {last_week}")
         layout.label(text="")
 
         # Default Cubes Display text.

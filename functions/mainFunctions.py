@@ -48,7 +48,9 @@ def date_register(path):
         4], time.localtime()[5]]
 
     if j["date"] != date:
-        j_date = str(j["date"])
+        j_date = time.strftime(
+            "%Y-%m-%d", time.strptime(str(j["date"]), "[%d, %m, %Y]"))
+
         j["dates_hours_alignment"][j_date] = j["time_today"]
         j["date"] = date
         j["time_yesterday"] = j["time_today"]
@@ -89,6 +91,24 @@ def get_today(path):
     return decode_json(path)["time_today"]
 
 
+# Get the usage time from the last week
+def get_last_week(path):
+    data = decode_json(path)
+    current_time = time.time()
+    time_last_week = data["time_today"]
+
+    DAY_IN_SECONDS = 60 * 60 * 24
+    FORMAT = "%Y-%m-%d"
+
+    for i in range(1, 8):
+        day = time.strftime(FORMAT, time.localtime(
+            current_time - i * DAY_IN_SECONDS))
+        if day in data["dates_hours_alignment"].keys():
+            time_last_week += data["dates_hours_alignment"][day]
+
+    return time_last_week
+
+
 # Get the count of deleted default cubes.
 def get_default_cubes(path):
     return int(decode_json(path)["default_cube"])
@@ -127,6 +147,26 @@ def update_json_and_data110(path):
             os.remove(file)
 
 
+def update_json_and_data120(path):
+    FORMAT = "[%d, %m, %Y]"
+
+    j = decode_json(path)
+
+    elements = list(j["dates_hours_alignment"].keys())
+
+    for i in elements:
+        try:
+            new_label = time.strftime("%Y-%m-%d", time.strptime(i, FORMAT))
+        except Exception:
+            continue
+        j["dates_hours_alignment"][new_label] = j["dates_hours_alignment"].pop(
+            i)
+
+    j["check_update"] = 120
+
+    encode_json(j, path)
+
+
 # Checks the version of the JSON Data file and updates, if necessary.
 def update_json(path):
     j = decode_json(path)
@@ -136,3 +176,6 @@ def update_json(path):
 
     if j["check_update"] == 101:
         update_json_and_data110(path)
+
+    if j["check_update"] == 110:
+        update_json_and_data120(path)
