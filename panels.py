@@ -12,11 +12,11 @@ from .functions.mainFunctions import (
 )
 
 
-class SUPERBLENDERANALYTICS_PT_main(bpy.types.Panel):
-    """Panel of the Super Blender Analytics Addon"""
+class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
+    """Panel of the Super Easy Analytics Addon"""
     bl_category = "View"
-    bl_idname = "SUPERBLENDERANALYTICS_PT_main"
-    bl_label = "Super Blender Analytics"
+    bl_idname = "SUPEREASYANALYTICS_PT_main"
+    bl_label = "Super Easy Analytics"
 
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -24,7 +24,7 @@ class SUPERBLENDERANALYTICS_PT_main(bpy.types.Panel):
     def draw(self, context):
         addon_prefs = context.preferences.addons[__package__].preferences
 
-        # Path to the Super Blender Analytics Data.
+        # Path to the Super Easy Analytics Data.
         path = p.join(p.expanduser("~"),
                       "Blender Addons Data",
                       "blender-analytics",
@@ -66,7 +66,7 @@ class SUPERBLENDERANALYTICS_PT_main(bpy.types.Panel):
 
 
 classes = (
-    SUPERBLENDERANALYTICS_PT_main,
+    SUPEREASYANALYTICS_PT_main,
 )
 
 

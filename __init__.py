@@ -39,16 +39,16 @@ from .functions.jsonFunctions import decode_json
 
 
 bl_info = {
-    "name": "Super Blender Analytics (SBA)",
+    "name": "Super Easy Analytics (SEA)",
     "author": "Blender Defender",
     "version": (1, 1, 0),
     "blender": (2, 83, 0),
-    "location": "Sidebar (N) > View > Super Blender Analytics",
+    "location": "Sidebar (N) > View > Super Easy Analytics",
     "description": "Analyze your Blender behavior!",
     "warning": "Checkout Gumroad for other Addons and more...",
-    "wiki_url": "https://gumroad.com/blenderdefender",
-    "tracker_url": "https://github.com/BlenderDefender/SuperBlenderAnalytics/issues",
-    "endpoint_url": "https://raw.githubusercontent.com/BlenderDefender/BlenderDefender/updater_endpoints/BLENDERANALYTICS.json",
+    "wiki_url": "https://github.com/BlenderDefender/SuperEasyAnalytics/wiki",
+    "tracker_url": "https://github.com/BlenderDefender/SuperEasyAnalytics/issues",
+    "endpoint_url": "https://raw.githubusercontent.com/BlenderDefender/BlenderDefender/updater_endpoints/SUPEREASYANALYTICS.json",
     "category": "Analytics"
 }
 
@@ -57,18 +57,18 @@ def register():
     prefs.register(bl_info)
     panels.register()
 
-    # Path to the Super Blender Analytics Data directory.
+    # Path to the Super Easy Analytics Data directory.
     path = p.join(p.expanduser(
         "~"), "Blender Addons Data", "blender-analytics")
 
-    # Create the Super Blender Analytics Data Directory, if it doesn't exist already.
+    # Create the Super Easy Analytics Data Directory, if it doesn't exist already.
     if not p.isdir(path):
         os.makedirs(path)
 
-    # Update the JSON Data file, if it doesn't work with the latest version of Super Blender Analytics.
+    # Update the JSON Data file, if it doesn't work with the latest version of Super Easy Analytics.
     if p.exists(p.join(path, "data.json")):
         update_json(p.join(path, "data.json"))
-    else:  # Copy data.json to the Super Blender Analytics Data directory, if it doesn't already exist.
+    else:  # Copy data.json to the Super Easy Analytics Data directory, if it doesn't already exist.
         shutil.copyfile(p.join(p.dirname(__file__),
                                "functions",
                                "data.json"),

@@ -27,7 +27,7 @@ from os import path as p
 from . import addon_updater_ops
 
 
-class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
+class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
     bl_idname = __package__
 
     # addon updater preferences
@@ -111,7 +111,7 @@ class BlenderAnalytics_APT_Preferences(bpy.types.AddonPreferences):
 
 
 classes = (
-    BlenderAnalytics_APT_Preferences,
+    SUPEREASYANALYTICS_APT_Preferences,
 )
 
 

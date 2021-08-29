@@ -55,7 +55,7 @@ except Exception as e:
 # Must declare this before classes are loaded
 # otherwise the bl_idname's will not match and have errors.
 # Must be all lowercase and no spaces
-updater.addon = "super_blender_analytics_update"
+updater.addon = "super_easy_analytics_update"
 
 
 # -----------------------------------------------------------------------------
@@ -1286,12 +1286,12 @@ def register(bl_info):
     updater.user = "blenderdefender"
 
     # choose your own repository, must match git name
-    updater.repo = "SuperBlenderAnalytics"
+    updater.repo = "SuperEasyAnalytics"
 
     # updater.addon = # define at top of module, MUST be done first
 
     # Website for manual addon download, optional but recommended to set
-    updater.website = "https://github.com/BlenderDefender/SuperBlenderAnalytics"
+    updater.website = "https://github.com/BlenderDefender/SuperEasyAnalytics"
 
     # Addon subfolder path
     # "sample/path/to/addon"
