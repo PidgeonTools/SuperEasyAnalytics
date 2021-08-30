@@ -37,26 +37,30 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
 
         # Manipulate the time based on the display settings.
         if addon_prefs.display_unit:
-            today = str(get_today(path)) + " minutes."
-            yesterday = str(get_yesterday(path)) + " minutes."
-            last_week = str(get_last_week(path)) + " minutes."
+            display_unit = "minutes"
+            today = get_today(path)
+            yesterday = get_yesterday(path)
+            last_week = get_last_week(path)
         else:
-            today = str(round(get_today(path) / 60, 2)) + " hours."
-            yesterday = str(round(get_yesterday(path) / 60, 2)) + " hours."
-            last_week = str(round(get_last_week(path) / 60, 2)) + " hours."
+            display_unit = "hours"
+            today = round(get_today(path) / 60, 2)
+            yesterday = round(get_yesterday(path) / 60, 2)
+            last_week = round(get_last_week(path) / 60, 2)
 
         # Generic Display text.
         username = p.basename(p.expanduser("~"))
         layout.label(
             text=f"Hello {username}, here are your Super Easy Analytics:")
 
-        layout.label(text="Blender Usage:", icon='BLENDER')
+        layout.label(text="Blender Usage:", icon='TIME')
 
         # Blender Usage Display text.
-        layout.label(text=f"Today, you've used Blender for {today}")
-        layout.label(text=f"Yesterday, you've used Blender for {yesterday}")
         layout.label(
-            text=f"During the last week, you've used Blender for {last_week}")
+            text=f"Today, you've used Blender for {today} {display_unit}.")
+        layout.label(
+            text=f"Yesterday, you've used Blender for {yesterday} {display_unit}.")
+        layout.label(
+            text=f"During the last week, you've used Blender for {last_week} {display_unit}.")
         layout.label(text="")
 
         # Default Cubes Display text.
