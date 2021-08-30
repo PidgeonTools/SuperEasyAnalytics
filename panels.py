@@ -67,6 +67,13 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
         layout.label(text="Default Cubes:", icon="MESH_CUBE")
         layout.label(
             text=f"You've deleted {get_default_cubes(path)} default cubes so far.")
+        layout.label(text="")
+
+        layout.label(text="App Statistics:", icon='BLENDER')
+
+        # Blender App Stats.
+        layout.label(
+            text=f"You have {len(context.preferences.addons)} addons enabled.")
 
 
 classes = (
