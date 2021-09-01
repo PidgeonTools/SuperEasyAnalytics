@@ -34,7 +34,7 @@ import shutil
 
 import queue
 
-from . import prefs, panels
+from . import prefs, panels, operators
 from .functions.jsonFunctions import decode_json
 
 
@@ -55,6 +55,7 @@ bl_info = {
 
 def register():
     prefs.register(bl_info)
+    operators.register()
     panels.register()
 
     # Path to the Super Easy Analytics Data directory.
@@ -86,8 +87,9 @@ def register():
 
 
 def unregister():
-    prefs.unregister()
+    operators.unregister()
     panels.unregister()
+    prefs.unregister()
 
     # Stop the default cube counter to avoid errors.
     t.cancel()

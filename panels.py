@@ -22,7 +22,7 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
     bl_region_type = 'UI'
 
     def draw(self, context):
-        addon_prefs = context.preferences.addons[__package__].preferences
+        prefs = context.preferences.addons[__package__].preferences
 
         # Path to the Super Easy Analytics Data.
         path = p.join(p.expanduser("~"),
@@ -36,7 +36,7 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
         date_unregister(path)
 
         # Manipulate the time based on the display settings.
-        if addon_prefs.display_unit:
+        if prefs.display_unit:
             display_unit = "minutes"
             today = get_today(path)
             yesterday = get_yesterday(path)
@@ -76,6 +76,15 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
             text=f"You have {len(context.preferences.addons)} addons enabled.")
 
 
+def save_reminder(self, context):
+    layout = self.layout
+
+    prefs = context.preferences.addons[__package__].preferences
+
+    if prefs.display_reminder:
+        layout.operator("supereasyanalytics.save_reminder", icon="ERROR")
+
+
 classes = (
     SUPEREASYANALYTICS_PT_main,
 )
@@ -85,9 +94,11 @@ def register():
     from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
+    bpy.types.VIEW3D_HT_header.append(save_reminder)
 
 
 def unregister():
     from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
+    bpy.types.VIEW3D_HT_header.remove(save_reminder)
