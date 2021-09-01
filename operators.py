@@ -25,7 +25,7 @@ class SUPEREASYANALYTICS_OT_save_reminder(bpy.types.Operator):
         prefs.display_reminder = False
 
         self._timer = wm.event_timer_add(
-            1 * prefs.save_reminder_interval, window=context.window)
+            60 * prefs.save_reminder_interval, window=context.window)
         wm.modal_handler_add(self)
         return {'RUNNING_MODAL'}
 

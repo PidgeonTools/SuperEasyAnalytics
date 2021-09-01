@@ -20,6 +20,10 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import bpy
+from bpy.props import (
+    BoolProperty,
+    IntProperty
+)
 
 import os
 from os import path as p
@@ -32,32 +36,32 @@ class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
 
     # addon updater preferences
 
-    auto_check_update: bpy.props.BoolProperty(
+    auto_check_update: BoolProperty(
         name="Auto-check for Update",
         description="If enabled, auto-check for updates using an interval",
         default=True,
     )
-    updater_intrval_months: bpy.props.IntProperty(
+    updater_intrval_months: IntProperty(
         name='Months',
         description="Number of months between checking for updates",
         default=0,
         min=0
     )
-    updater_intrval_days: bpy.props.IntProperty(
+    updater_intrval_days: IntProperty(
         name='Days',
         description="Number of days between checking for updates",
         default=7,
         min=0,
         max=31
     )
-    updater_intrval_hours: bpy.props.IntProperty(
+    updater_intrval_hours: IntProperty(
         name='Hours',
         description="Number of hours between checking for updates",
         default=0,
         min=0,
         max=23
     )
-    updater_intrval_minutes: bpy.props.IntProperty(
+    updater_intrval_minutes: IntProperty(
         name='Minutes',
         description="Number of minutes between checking for updates",
         default=0,
@@ -65,19 +69,19 @@ class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
         max=59
     )
 
-    display_unit: bpy.props.BoolProperty(
+    display_unit: BoolProperty(
         name="Display Unit",
         description="Switch between displaying in minutes or in hours",
         default=True
     )
 
-    save_reminder_interval: bpy.props.IntProperty(
-        name="Save Reminder interval",
+    save_reminder_interval: IntProperty(
+        name="Save Reminder Interval",
         description="Number of minutes until reminding you to save.",
         default=5
     )
 
-    display_reminder: bpy.props.BoolProperty(
+    display_reminder: BoolProperty(
         default=True
     )
 
@@ -94,6 +98,8 @@ class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
         else:
             layout.prop(self, "display_unit", toggle=True,
                         text="Active Display Unit: Hours")
+
+        layout.prop(self, "save_reminder_interval")
 
         # col = layout.column() # works best if a column, or even just self.layout
         mainrow = layout.row()
