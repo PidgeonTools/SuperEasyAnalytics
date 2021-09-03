@@ -42,10 +42,11 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    bpy.app.handlers.undo_post.append(count_undo)
 
 
 def unregister():
     for cls in classes:
         bpy.utils.unregister_class(cls)
 
-    bpy.context.preferences.addons[__package__].preferences.display_reminder = True
+    bpy.app.handlers.undo_post.remove(count_undo)

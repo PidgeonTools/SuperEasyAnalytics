@@ -8,7 +8,8 @@ from .functions.mainFunctions import (
     get_yesterday,
     get_today,
     get_last_week,
-    get_default_cubes
+    get_default_cubes,
+    get_undos
 )
 
 
@@ -61,6 +62,8 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
             text=f"Yesterday, you've used Blender for {yesterday} {display_unit}.")
         layout.label(
             text=f"During the last week, you've used Blender for {last_week} {display_unit}.")
+        layout.label(text="")
+        layout.label(text=f"While using Blender, you've undone {get_undos(path)} steps.")
         layout.label(text="")
 
         # Default Cubes Display text.

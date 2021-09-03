@@ -117,6 +117,30 @@ def get_default_cubes(path):
     return int(decode_json(path)["default_cube"])
 
 
+def get_undos(path):
+    data = decode_json(path)
+
+    if "undo_count" in data.keys():
+        return data["undo_count"]
+
+    return 0
+
+
+# Count the number of undos
+@persistent
+def count_undo(*args):
+    path = p.join(p.expanduser(
+        "~"), "Blender Addons Data", "blender-analytics", "data.json")
+    data = decode_json(path)
+
+    if not "undo_count" in data.keys():
+        data["undo_count"] = 0
+
+    data["undo_count"] += 1
+
+    encode_json(data, path)
+
+
 @persistent
 def startup_setup(*args):
     path = p.join(p.expanduser(
