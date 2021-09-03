@@ -35,7 +35,9 @@ import shutil
 import queue
 
 from . import prefs, panels, operators
-from .functions.jsonFunctions import decode_json
+from .functions.mainFunctions import (
+    startup_setup
+)
 
 
 bl_info = {
@@ -57,6 +59,7 @@ def register():
     prefs.register(bl_info)
     operators.register()
     panels.register()
+    bpy.app.handlers.load_post.append(startup_setup)
 
     # Path to the Super Easy Analytics Data directory.
     path = p.join(p.expanduser(
@@ -82,14 +85,12 @@ def register():
                                                          p.join(path, "data.json")))
     t.start()
 
-    # Save the date/time at startup.
-    date_register(p.join(path, "data.json"))
-
 
 def unregister():
     operators.unregister()
     panels.unregister()
     prefs.unregister()
+    bpy.app.handlers.load_post.remove(startup_setup)
 
     # Stop the default cube counter to avoid errors.
     t.cancel()

@@ -19,6 +19,9 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import bpy
+from bpy.app.handlers import persistent
+
 import time
 
 import os
@@ -112,6 +115,26 @@ def get_last_week(path):
 # Get the count of deleted default cubes.
 def get_default_cubes(path):
     return int(decode_json(path)["default_cube"])
+
+
+@persistent
+def startup_setup(*args):
+    path = p.join(p.expanduser(
+        "~"), "Blender Addons Data", "blender-analytics", "data.json")
+
+    bpy.context.preferences.addons[__package__.split(
+        ".")[0]].preferences.display_reminder = True
+
+    # threading.Timer(5, lambda: test()).start()
+
+    # Start the default cube counter.
+    # global t
+    # t = threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users,
+    #                                                p.join(path, "data.json")))
+    # t.start()
+
+    # Save the date/time at startup.
+    date_register(path)
 
 
 # Update the data to version 1.0.1!
