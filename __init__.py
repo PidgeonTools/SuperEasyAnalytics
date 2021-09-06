@@ -19,12 +19,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-from .functions.mainFunctions import (
-    check_for_cube,
-    date_register,
-    date_unregister,
-    update_json,
-)
+
 import bpy
 
 import os
@@ -32,11 +27,20 @@ from os import path as p
 
 import shutil
 
-import queue
+from . import (
+    prefs,
+    panels,
+    operators,
+    headers
+)
 
-from . import prefs, panels, operators
-from .functions.mainFunctions import (
-    startup_setup
+from .functions import (
+    handler_functions
+)
+
+from .functions.main_functions import (
+    date_unregister,
+    update_json,
 )
 
 
@@ -55,49 +59,42 @@ bl_info = {
 }
 
 
+modules = (
+    operators,
+    panels,
+    headers,
+    handler_functions
+)
+
+# Path to the Super Easy Analytics Data directory.
+PATH = p.join(p.expanduser(
+    "~"), "Blender Addons Data", "blender-analytics", "data.json")
+
+
 def register():
     prefs.register(bl_info)
-    operators.register()
-    panels.register()
-    bpy.app.handlers.load_post.append(startup_setup)
 
-    # Path to the Super Easy Analytics Data directory.
-    path = p.join(p.expanduser(
-        "~"), "Blender Addons Data", "blender-analytics")
+    for mod in modules:
+        mod.register()
 
     # Create the Super Easy Analytics Data Directory, if it doesn't exist already.
-    if not p.isdir(path):
-        os.makedirs(path)
+    if not p.isdir(p.dirname(PATH)):
+        os.makedirs(p.dirname(PATH))
 
     # Update the JSON Data file, if it doesn't work with the latest version of Super Easy Analytics.
-    if p.exists(p.join(path, "data.json")):
-        update_json(p.join(path, "data.json"))
+    if p.exists(PATH):
+        update_json(PATH)
     else:  # Copy data.json to the Super Easy Analytics Data directory, if it doesn't already exist.
         shutil.copyfile(p.join(p.dirname(__file__),
                                "functions",
                                "data.json"),
-                        p.join(path,
-                               "data.json"))
-
-    # Start the default cube counter.
-    global t
-    t = queue.threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users,
-                                                         p.join(path, "data.json")))
-    t.start()
+                        PATH)
 
 
 def unregister():
-    operators.unregister()
-    panels.unregister()
+    for mod in reversed(modules):
+        mod.unregister()
+
     prefs.unregister()
-    bpy.app.handlers.load_post.remove(startup_setup)
 
-    # Stop the default cube counter to avoid errors.
-    t.cancel()
-
-    # Write the usage time to data.json!
-    path = p.join(p.expanduser("~"),
-                  "Blender Addons Data",
-                  "blender-analytics",
-                  "data.json")
-    date_unregister(path)
+    date_unregister(PATH)

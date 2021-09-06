@@ -3,7 +3,7 @@ import bpy
 import os
 from os import path as p
 
-from .functions.mainFunctions import (
+from .functions.main_functions import (
     date_unregister,
     get_yesterday,
     get_today,
@@ -63,7 +63,8 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
         layout.label(
             text=f"During the last week, you've used Blender for {last_week} {display_unit}.")
         layout.label(text="")
-        layout.label(text=f"While using Blender, you've undone {get_undos(path)} steps.")
+        layout.label(
+            text=f"While using Blender, you've undone {get_undos(path)} steps.")
         layout.label(text="")
 
         # Default Cubes Display text.

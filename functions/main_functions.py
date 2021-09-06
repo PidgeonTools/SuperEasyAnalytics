@@ -19,15 +19,13 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-import bpy
-from bpy.app.handlers import persistent
 
 import time
 
 import os
 from os import path as p
 
-from .jsonFunctions import (
+from .json_functions import (
     decode_json,
     encode_json
 )
@@ -47,19 +45,17 @@ def check_for_cube(data, path):
 def date_register(path):
     j = decode_json(path)
     date = [time.localtime()[2], time.localtime()[1], time.localtime()[0]]
-    current_time = [time.localtime()[3], time.localtime()[
-        4], time.localtime()[5]]
 
     if j["date"] != date:
         j_date = time.strftime(
             "%Y-%m-%d", time.strptime(str(j["date"]), "[%d, %m, %Y]"))
 
-        j["dates_hours_alignment"][j_date] = j["time_today"]
+        j["dates_hours_alignment"][j_date] = round(j["time_today"] / 60)
         j["date"] = date
-        j["time_yesterday"] = j["time_today"]
+        j["time_yesterday"] = round(j["time_today"] / 60)
         j["time_today"] = 0.00
 
-    j["start_time"] = current_time
+    j["start_time"] = int(time.time())
     encode_json(j, path)
 
 
@@ -68,17 +64,14 @@ def date_register(path):
 def date_unregister(path):
     j = decode_json(path)
 
-    current_time = [time.localtime()[3], time.localtime()[
-        4], time.localtime()[5]]
+    # [time.localtime()[3], time.localtime()[4], time.localtime()[5]]
+    current_time = int(time.time())
 
-    hours = current_time[0] - j["start_time"][0]
-    minutes = current_time[1] - j["start_time"][1]
-    seconds = current_time[2] - j["start_time"][2]
+    total_seconds = current_time - j["start_time"]
+    if total_seconds > 30:
+        total_seconds = 0
 
-    total_minutes = (hours * 60) + minutes + round((seconds / 60))
-    if total_minutes < 0:
-        total_minutes += 24 * 60
-    j["time_today"] += round(total_minutes, 2)
+    j["time_today"] += total_seconds
     j["start_time"] = current_time
 
     encode_json(j, path)
@@ -91,14 +84,14 @@ def get_yesterday(path):
 
 # Get the usage time from today.
 def get_today(path):
-    return decode_json(path)["time_today"]
+    return round(decode_json(path)["time_today"] / 60)
 
 
 # Get the usage time from the last week
 def get_last_week(path):
     data = decode_json(path)
     current_time = time.time()
-    time_last_week = data["time_today"]
+    time_last_week = round(data["time_today"] / 60)
 
     DAY_IN_SECONDS = 60 * 60 * 24
     FORMAT = "%Y-%m-%d"
@@ -124,41 +117,6 @@ def get_undos(path):
         return data["undo_count"]
 
     return 0
-
-
-# Count the number of undos
-@persistent
-def count_undo(*args):
-    path = p.join(p.expanduser(
-        "~"), "Blender Addons Data", "blender-analytics", "data.json")
-    data = decode_json(path)
-
-    if not "undo_count" in data.keys():
-        data["undo_count"] = 0
-
-    data["undo_count"] += 1
-
-    encode_json(data, path)
-
-
-@persistent
-def startup_setup(*args):
-    path = p.join(p.expanduser(
-        "~"), "Blender Addons Data", "blender-analytics", "data.json")
-
-    bpy.context.preferences.addons[__package__.split(
-        ".")[0]].preferences.display_reminder = True
-
-    # threading.Timer(5, lambda: test()).start()
-
-    # Start the default cube counter.
-    # global t
-    # t = threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users,
-    #                                                p.join(path, "data.json")))
-    # t.start()
-
-    # Save the date/time at startup.
-    date_register(path)
 
 
 # Update the data to version 1.0.1!

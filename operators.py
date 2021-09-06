@@ -1,6 +1,27 @@
 import bpy
 
 
+class SUPEREASYANALYTICS_OT_modal(bpy.types.Operator):
+    """Utility Operator that handles events in Blender."""
+    bl_idname = "supereasyanalytics.modal"
+    bl_label = "Operator"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def modal(self, context, event):
+        if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE", "LEFTMOUSE", "MIDDLEMOUSE", "RIGHMOUSE", "X"]:
+            return {"PASS_THROUGH"}
+
+        if event.type == "WINDOW_DEACTIVATE":
+            print("Deactivated Blender!")
+            return {'PASS_THROUGH'}
+
+        return {'PASS_THROUGH'}
+
+    def execute(self, context):
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+
 class SUPEREASYANALYTICS_OT_save_reminder(bpy.types.Operator):
     """Reminder: You need to save"""
     bl_idname = "supereasyanalytics.save_reminder"
@@ -35,6 +56,7 @@ class SUPEREASYANALYTICS_OT_save_reminder(bpy.types.Operator):
 
 
 classes = (
+    SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
 )
 
@@ -42,11 +64,8 @@ classes = (
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
-    bpy.app.handlers.undo_post.append(count_undo)
 
 
 def unregister():
-    for cls in classes:
+    for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
-
-    bpy.app.handlers.undo_post.remove(count_undo)
