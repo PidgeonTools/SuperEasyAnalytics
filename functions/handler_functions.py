@@ -33,6 +33,10 @@ from .main_functions import (
     date_register
 )
 
+from .register_functions import (
+    register_props
+)
+
 
 # Count the number of undos
 @persistent
@@ -51,6 +55,7 @@ def count_undo(*args):
 
 @persistent
 def startup_setup(*args):
+    scene = bpy.context.scene
     path = p.join(p.expanduser(
         "~"), "Blender Addons Data", "blender-analytics", "data.json")
 
@@ -67,6 +72,9 @@ def startup_setup(*args):
 
     # Save the date/time at startup.
     date_register(path)
+
+    if not hasattr(scene, "project_time"):
+        register_props()
 
     print(bpy.ops.supereasyanalytics.modal())
 
