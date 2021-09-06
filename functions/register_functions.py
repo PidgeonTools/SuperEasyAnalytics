@@ -46,6 +46,10 @@ def register_props():
         name="Time spent on this file",
         default=0.0
     )
+    scene.project_price = FloatProperty(
+        name="How much do you get paid for this project?",
+        default=0.0
+    )
 
 
 # Save the date and time on Blender Startup.

@@ -21,9 +21,35 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
     bl_category = "View"
     bl_idname = "SUPEREASYANALYTICS_PT_main"
     bl_label = "Super Easy Analytics"
-    bl_order = 0
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
+
+    def draw(self, context):
+        # Path to the Super Easy Analytics Data.
+        path = p.join(p.expanduser("~"),
+                      "Blender Addons Data",
+                      "blender-analytics",
+                      "data.json")
+
+        layout = self.layout
+
+        # First, calculate the usage time.
+        date_unregister(path)
+
+        # Generic Display text.
+        username = p.basename(p.expanduser("~"))
+        layout.label(
+            text=f"Hello {username}, here are your Super Easy Analytics:")
+
+
+class SUPEREASYANALYTICS_PT_usage_stats(bpy.types.Panel):
+    """Usage Statistics"""
+    bl_label = "Usage Statistics"
+    bl_idname = "SUPEREASYANALYTICS_PT_usage_stats"
+
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_parent_id = "SUPEREASYANALYTICS_PT_main"
 
     def draw(self, context):
         prefs = context.preferences.addons[__package__].preferences
@@ -36,9 +62,6 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
 
         layout = self.layout
 
-        # First, calculate the usage time.
-        date_unregister(path)
-
         # Manipulate the time based on the display settings.
         if prefs.display_unit:
             display_unit = "minutes"
@@ -50,11 +73,6 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
             today = round(get_today(path) / 60, 2)
             yesterday = round(get_yesterday(path) / 60, 2)
             last_week = round(get_last_week(path) / 60, 2)
-
-        # Generic Display text.
-        username = p.basename(p.expanduser("~"))
-        layout.label(
-            text=f"Hello {username}, here are your Super Easy Analytics:")
 
         layout.label(text="Blender Usage:", icon='TIME')
 
@@ -83,6 +101,38 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
             text=f"You have {len(context.preferences.addons)} addons enabled.")
 
 
+class SUPEREASYANALYTICS_PT_freelancer_stats(bpy.types.Panel):
+    """Freelancer Statistics"""
+    bl_label = "Freelancer Statistics"
+    bl_idname = "SUPEREASYANALYTICS_PT_freelancer_stats"
+
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_parent_id = "SUPEREASYANALYTICS_PT_main"
+
+    @classmethod
+    def poll(cls, context):
+        return context.preferences.addons[__package__].preferences.freelancer_stats
+
+    def draw(self, context):
+        prefs = context.preferences.addons[__package__].preferences
+
+        price_per_hour = round(
+            (context.scene.project_price / (bpy.project_time + 1)) * 60 * 60, 2)
+
+        # Limit the price per hour display to start after 10 minutes
+        # (the price per hour values are way too high after just a few seconds)
+        if price_per_hour > context.scene.project_price * 6:
+            price_per_hour = context.scene.project_price * 6
+
+        layout = self.layout
+        if context.scene.project_price == 0:
+            layout.operator("supereasyanalytics.set_project_price")
+
+        layout.label(
+            text=f"At your current working time, you're getting paid ${price_per_hour} per hour.")
+
+
 class SUPEREASYANALYTICS_PT_project_stats(bpy.types.Panel):
     """Statistics for the current project"""
     bl_label = "Project Statistics"
@@ -90,7 +140,6 @@ class SUPEREASYANALYTICS_PT_project_stats(bpy.types.Panel):
 
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "View"
     bl_parent_id = "SUPEREASYANALYTICS_PT_main"
 
     def draw(self, context):
@@ -121,6 +170,8 @@ def save_reminder(self, context):
 
 classes = (
     SUPEREASYANALYTICS_PT_main,
+    SUPEREASYANALYTICS_PT_usage_stats,
+    SUPEREASYANALYTICS_PT_freelancer_stats,
     SUPEREASYANALYTICS_PT_project_stats
 )
 

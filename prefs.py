@@ -75,6 +75,12 @@ class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
         default=True
     )
 
+    freelancer_stats: BoolProperty(
+        name="Freelancer Statistics",
+        description="Enable a set of statistics, that can be useful to freelancers.",
+        default=False
+    )
+
     save_reminder_interval: IntProperty(
         name="Save Reminder Interval",
         description="Number of minutes until reminding you to save.",
@@ -91,6 +97,8 @@ class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
         username = p.basename(p.expanduser("~"))
         layout.label(
             text=f"Hello {username}, here are your Addon Preferences:")
+
+        layout.prop(self, "freelancer_stats")
 
         if self.display_unit:
             layout.prop(self, "display_unit", toggle=True,

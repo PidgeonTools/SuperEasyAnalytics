@@ -1,5 +1,7 @@
 import bpy
-
+from bpy.props import (
+    FloatProperty,
+)
 from os import path as p
 
 from .functions.main_functions import (
@@ -67,9 +69,30 @@ class SUPEREASYANALYTICS_OT_save_reminder(bpy.types.Operator):
         wm.event_timer_remove(self._timer)
 
 
+class SUPEREASYANALYTICS_OT_set_project_price(bpy.types.Operator):
+    """Set the price you get paid for this project."""
+    bl_idname = "supereasyanalytics.set_project_price"
+    bl_label = "Set Project Price"
+    bl_options = {'UNDO'}
+
+    price = FloatProperty(
+        name="Project Price",
+        default=0.0
+    )
+
+    def execute(self, context):
+        context.scene.project_price = self.price
+
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
+    SUPEREASYANALYTICS_OT_set_project_price
 )
 
 
