@@ -4,12 +4,15 @@ import os
 from os import path as p
 
 from .functions.main_functions import (
-    date_unregister,
     get_yesterday,
     get_today,
     get_last_week,
     get_default_cubes,
     get_undos
+)
+
+from .functions.register_functions import (
+    date_unregister
 )
 
 
@@ -18,7 +21,7 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
     bl_category = "View"
     bl_idname = "SUPEREASYANALYTICS_PT_main"
     bl_label = "Super Easy Analytics"
-
+    bl_order = 0
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
 
@@ -80,6 +83,33 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
             text=f"You have {len(context.preferences.addons)} addons enabled.")
 
 
+class SUPEREASYANALYTICS_PT_project_stats(bpy.types.Panel):
+    """Statistics for the current project"""
+    bl_label = "Project Statistics"
+    bl_idname = "SUPEREASYANALYTICS_PT_project_stats"
+
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "View"
+    bl_parent_id = "SUPEREASYANALYTICS_PT_main"
+
+    def draw(self, context):
+        prefs = context.preferences.addons[__package__].preferences
+
+        layout = self.layout
+
+        # Manipulate the time based on the display settings.
+        if prefs.display_unit:
+            display_unit = "minutes"
+            project_time = round(bpy.project_time / 60)
+        else:
+            display_unit = "hours"
+            project_time = round(bpy.project_time / (60 * 60))
+
+        layout.label(
+            text=f"You have spent {project_time} {display_unit} on this file so far.")
+
+
 def save_reminder(self, context):
     layout = self.layout
 
@@ -91,6 +121,7 @@ def save_reminder(self, context):
 
 classes = (
     SUPEREASYANALYTICS_PT_main,
+    SUPEREASYANALYTICS_PT_project_stats
 )
 
 

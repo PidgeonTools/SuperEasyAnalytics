@@ -2,7 +2,7 @@ import bpy
 
 from os import path as p
 
-from .functions.main_functions import (
+from .functions.register_functions import (
     date_unregister
 )
 

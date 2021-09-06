@@ -29,12 +29,10 @@ from .json_functions import (
     encode_json
 )
 
-from .main_functions import (
-    date_register
-)
 
 from .register_functions import (
-    register_props
+    register_props,
+    date_register
 )
 
 
@@ -69,14 +67,22 @@ def startup_setup(*args):
     if not hasattr(scene, "project_time"):
         register_props()
 
+    bpy.project_time = bpy.context.scene.project_time
     print(bpy.ops.supereasyanalytics.modal())
+
+
+@persistent
+def save_project_time(*args):
+    bpy.context.scene.project_time = bpy.project_time
 
 
 def register():
     bpy.app.handlers.load_post.append(startup_setup)
     bpy.app.handlers.undo_post.append(count_undo)
+    bpy.app.handlers.save_pre.append(save_project_time)
 
 
 def unregister():
     bpy.app.handlers.load_post.remove(startup_setup)
     bpy.app.handlers.undo_post.remove(count_undo)
+    bpy.app.handlers.save_pre.remove(save_project_time)

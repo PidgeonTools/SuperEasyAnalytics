@@ -39,10 +39,12 @@ from .functions import (
 )
 
 from .functions.main_functions import (
-    date_unregister,
     update_json,
 )
 
+from .functions.register_functions import (
+    date_unregister
+)
 
 bl_info = {
     "name": "Super Easy Analytics (SEA)",

@@ -48,41 +48,6 @@ def check_for_cube(context, data, path):
         encode_json(j, path)
 
 
-# Save the date and time on Blender Startup.
-def date_register(path):
-    j = decode_json(path)
-    date = [time.localtime()[2], time.localtime()[1], time.localtime()[0]]
-
-    if j["date"] != date:
-        j_date = time.strftime(
-            "%Y-%m-%d", time.strptime(str(j["date"]), "[%d, %m, %Y]"))
-
-        j["dates_hours_alignment"][j_date] = round(j["time_today"] / 60)
-        j["date"] = date
-        j["time_yesterday"] = round(j["time_today"] / 60)
-        j["time_today"] = 0.00
-
-    j["start_time"] = int(time.time())
-    encode_json(j, path)
-
-
-# Save the difference between the start date/time and the end date/time as Blender usage time.
-# Save the current date/time as new start date/time.
-def date_unregister(path):
-    j = decode_json(path)
-
-    current_time = int(time.time())
-
-    total_seconds = current_time - j["start_time"]
-    if total_seconds > 30:
-        total_seconds = 0
-
-    j["time_today"] += total_seconds
-    j["start_time"] = current_time
-
-    encode_json(j, path)
-
-
 # Get the usage time from yesterday.
 def get_yesterday(path):
     return decode_json(path)["time_yesterday"]
