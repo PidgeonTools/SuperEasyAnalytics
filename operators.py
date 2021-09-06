@@ -1,5 +1,14 @@
 import bpy
 
+from os import path as p
+
+from .functions.main_functions import (
+    check_for_cube
+)
+
+PATH = p.join(p.expanduser(
+    "~"), "Blender Addons Data", "blender-analytics", "data.json")
+
 
 class SUPEREASYANALYTICS_OT_modal(bpy.types.Operator):
     """Utility Operator that handles events in Blender."""
@@ -8,12 +17,15 @@ class SUPEREASYANALYTICS_OT_modal(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def modal(self, context, event):
-        if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE", "LEFTMOUSE", "MIDDLEMOUSE", "RIGHMOUSE", "X"]:
+        if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE", "LEFTMOUSE", "MIDDLEMOUSE", "RIGHMOUSE"]:
             return {"PASS_THROUGH"}
 
         if event.type == "WINDOW_DEACTIVATE":
             print("Deactivated Blender!")
             return {'PASS_THROUGH'}
+
+        if event.type == "X":
+            check_for_cube(context, bpy.data, PATH)
 
         return {'PASS_THROUGH'}
 

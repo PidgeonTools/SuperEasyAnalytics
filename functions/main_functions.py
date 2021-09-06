@@ -32,12 +32,19 @@ from .json_functions import (
 
 
 # Check, if the default cube has been deleted.
-def check_for_cube(data, path):
-    if data is 0:
-        print("Default Cube deleted!")
+def check_for_cube(context, data, path):
+    already_counted = context.scene.default_cube_deleted
+    cube_deleted = False
 
+    if "Cube" in data.meshes.keys():
+        cube_deleted = data.meshes['Cube'].users == 0
+
+    if cube_deleted and not already_counted:
         j = decode_json(path)
+
         j["default_cube"] += 1
+        context.scene.default_cube_deleted = True
+
         encode_json(j, path)
 
 
@@ -64,7 +71,6 @@ def date_register(path):
 def date_unregister(path):
     j = decode_json(path)
 
-    # [time.localtime()[3], time.localtime()[4], time.localtime()[5]]
     current_time = int(time.time())
 
     total_seconds = current_time - j["start_time"]

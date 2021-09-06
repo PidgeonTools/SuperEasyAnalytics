@@ -62,17 +62,10 @@ def startup_setup(*args):
     bpy.context.preferences.addons[__package__.split(
         ".")[0]].preferences.display_reminder = True
 
-    # threading.Timer(5, lambda: test()).start()
-
-    # Start the default cube counter.
-    # global t
-    # t = threading.Timer(40, lambda: check_for_cube(bpy.data.meshes['Cube'].users,
-    #                                                p.join(path, "data.json")))
-    # t.start()
-
     # Save the date/time at startup.
     date_register(path)
 
+    # Register all custom properties in the file.
     if not hasattr(scene, "project_time"):
         register_props()
 
