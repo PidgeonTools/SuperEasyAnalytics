@@ -42,31 +42,10 @@ class SUPEREASYANALYTICS_OT_save_reminder(bpy.types.Operator):
     bl_label = "Save your file!"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def modal(self, context, event):
-        prefs = context.preferences.addons[__package__].preferences
-
-        if event.type == 'TIMER':
-            prefs.display_reminder = True
-            self.cancel(context)
-
-        return {'PASS_THROUGH'}
-
     def execute(self, context):
-        prefs = context.preferences.addons[__package__].preferences
-        wm = context.window_manager
-
         bpy.ops.wm.save_mainfile('INVOKE_DEFAULT')
 
-        prefs.display_reminder = False
-
-        self._timer = wm.event_timer_add(
-            60 * prefs.save_reminder_interval, window=context.window)
-        wm.modal_handler_add(self)
         return {'RUNNING_MODAL'}
-
-    def cancel(self, context):
-        wm = context.window_manager
-        wm.event_timer_remove(self._timer)
 
 
 class SUPEREASYANALYTICS_OT_set_project_price(bpy.types.Operator):

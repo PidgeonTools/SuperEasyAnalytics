@@ -3,6 +3,8 @@ import bpy
 import os
 from os import path as p
 
+import time
+
 from .functions.main_functions import (
     get_yesterday,
     get_today,
@@ -162,9 +164,13 @@ class SUPEREASYANALYTICS_PT_project_stats(bpy.types.Panel):
 def save_reminder(self, context):
     layout = self.layout
 
-    prefs = context.preferences.addons[__package__].preferences
+    D = bpy.data
 
-    if prefs.display_reminder:
+    prefs = context.preferences.addons[__package__].preferences
+    remind = prefs.save_reminder_interval * 60 <= int(
+        time.time()) - context.scene.save_timestamp
+
+    if not D.is_saved or (D.is_dirty and remind):
         layout.operator("supereasyanalytics.save_reminder", icon="ERROR")
 
 

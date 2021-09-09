@@ -87,10 +87,6 @@ class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
         default=5
     )
 
-    display_reminder: BoolProperty(
-        default=True
-    )
-
     def draw(self, context):
         layout = self.layout
 

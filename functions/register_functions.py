@@ -24,7 +24,7 @@ import bpy
 from bpy.props import (
     BoolProperty,
     FloatProperty,
-    StringProperty
+    IntProperty
 )
 
 import time
@@ -49,6 +49,9 @@ def register_props():
     scene.project_price = FloatProperty(
         name="How much do you get paid for this project?",
         default=0.0
+    )
+    scene.save_timestamp = IntProperty(
+        name="Save timestamp"
     )
 
 
