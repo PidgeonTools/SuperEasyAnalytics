@@ -68,10 +68,33 @@ class SUPEREASYANALYTICS_OT_set_project_price(bpy.types.Operator):
         return context.window_manager.invoke_props_dialog(self)
 
 
+class SUPEREASYANALYTICS_OT_select_unapplied_scale(bpy.types.Operator):
+    """Select all objects with unapplied scale. Excludes linked duplicates, because scale can't be applied on linked duplicates!"""
+    bl_idname = "supereasyanalytics.select_unapplied_scale"
+    bl_label = "Select objects with unapplied scale"
+    bl_options = {'UNDO'}
+
+    def execute(self, context):
+        for ob in context.scene.objects:
+            ob.select_set(False)
+            ob_scale = (ob.scale.x, ob.scale.y, ob.scale.z)
+
+            is_mesh = ob.name in bpy.data.meshes.keys()
+            multi_user = False
+            if is_mesh:
+                multi_user = bpy.data.meshes[ob.name].users > 1
+
+            if is_mesh and not multi_user and not ob_scale == (1.0, 1.0, 1.0):
+                ob.select_set(True)
+
+        return {'FINISHED'}
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
-    SUPEREASYANALYTICS_OT_set_project_price
+    SUPEREASYANALYTICS_OT_set_project_price,
+    SUPEREASYANALYTICS_OT_select_unapplied_scale
 )
 
 

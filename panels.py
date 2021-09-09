@@ -1,4 +1,5 @@
 import bpy
+from bpy.types import Panel
 
 import os
 from os import path as p
@@ -18,7 +19,7 @@ from .functions.register_functions import (
 )
 
 
-class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
+class SUPEREASYANALYTICS_PT_main(Panel):
     """Panel of the Super Easy Analytics Addon"""
     bl_category = "View"
     bl_idname = "SUPEREASYANALYTICS_PT_main"
@@ -44,7 +45,7 @@ class SUPEREASYANALYTICS_PT_main(bpy.types.Panel):
             text=f"Hello {username}, here are your Super Easy Analytics:")
 
 
-class SUPEREASYANALYTICS_PT_usage_stats(bpy.types.Panel):
+class SUPEREASYANALYTICS_PT_usage_stats(Panel):
     """Usage Statistics"""
     bl_label = "Usage Statistics"
     bl_idname = "SUPEREASYANALYTICS_PT_usage_stats"
@@ -103,7 +104,22 @@ class SUPEREASYANALYTICS_PT_usage_stats(bpy.types.Panel):
             text=f"You have {len(context.preferences.addons)} addons enabled.")
 
 
-class SUPEREASYANALYTICS_PT_freelancer_stats(bpy.types.Panel):
+class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
+    """Analyze your current scene and highlight objects that fulfill certain criteria"""
+    bl_label = "Scene Analytics"
+    bl_idname = "SUPEREASYANALYTICS_PT_scene_analytics"
+
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_parent_id = "SUPEREASYANALYTICS_PT_main"
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.operator("supereasyanalytics.select_unapplied_scale", text="Highlight unapplied scale")
+
+
+class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
     """Freelancer Statistics"""
     bl_label = "Freelancer Statistics"
     bl_idname = "SUPEREASYANALYTICS_PT_freelancer_stats"
@@ -135,7 +151,7 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(bpy.types.Panel):
             text=f"At your current working time, you're getting paid ${price_per_hour} per hour.")
 
 
-class SUPEREASYANALYTICS_PT_project_stats(bpy.types.Panel):
+class SUPEREASYANALYTICS_PT_project_stats(Panel):
     """Statistics for the current project"""
     bl_label = "Project Statistics"
     bl_idname = "SUPEREASYANALYTICS_PT_project_stats"
@@ -177,6 +193,7 @@ def save_reminder(self, context):
 classes = (
     SUPEREASYANALYTICS_PT_main,
     SUPEREASYANALYTICS_PT_usage_stats,
+    SUPEREASYANALYTICS_PT_scene_analytics,
     SUPEREASYANALYTICS_PT_freelancer_stats,
     SUPEREASYANALYTICS_PT_project_stats
 )
