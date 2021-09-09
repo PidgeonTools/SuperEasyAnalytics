@@ -54,7 +54,7 @@ class SUPEREASYANALYTICS_OT_set_project_price(bpy.types.Operator):
     bl_label = "Set Project Price"
     bl_options = {'UNDO'}
 
-    price = FloatProperty(
+    price: FloatProperty(
         name="Project Price",
         default=0.0
     )
