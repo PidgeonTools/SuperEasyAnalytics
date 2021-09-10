@@ -84,10 +84,10 @@ class SUPEREASYANALYTICS_OT_select_unapplied_scale(bpy.types.Operator):
             ob.select_set(False)
             ob_scale = (ob.scale.x, ob.scale.y, ob.scale.z)
 
-            is_mesh = ob.name in bpy.data.meshes.keys()
+            is_mesh = ob.type == "MESH"
             multi_user = False
             if is_mesh:
-                multi_user = bpy.data.meshes[ob.name].users > 1
+                multi_user = ob.data.users > 1
 
             if is_mesh and not multi_user and not ob_scale == (1.0, 1.0, 1.0):
                 ob.select_set(True)
