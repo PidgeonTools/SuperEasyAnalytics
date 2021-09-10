@@ -31,7 +31,6 @@ from . import (
     prefs,
     panels,
     operators,
-    headers
 )
 
 from .functions import (
@@ -64,7 +63,6 @@ bl_info = {
 modules = (
     operators,
     panels,
-    headers,
     handler_functions
 )
 

@@ -27,6 +27,8 @@ from bpy.props import (
     IntProperty
 )
 
+from os import path as p
+
 import time
 
 from .json_functions import (

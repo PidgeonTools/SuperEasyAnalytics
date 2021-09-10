@@ -7,6 +7,9 @@ from os import path as p
 from .functions.main_functions import (
     check_for_cube
 )
+from .functions.register_functions import (
+    date_unregister
+)
 
 PATH = p.join(p.expanduser(
     "~"), "Blender Addons Data", "blender-analytics", "data.json")
@@ -19,7 +22,7 @@ class SUPEREASYANALYTICS_OT_modal(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def modal(self, context, event):
-        if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE", "LEFTMOUSE", "MIDDLEMOUSE", "RIGHMOUSE"]:
+        if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE"]:
             return {"PASS_THROUGH"}
 
         if event.type == "WINDOW_DEACTIVATE":
@@ -28,6 +31,8 @@ class SUPEREASYANALYTICS_OT_modal(bpy.types.Operator):
 
         if event.type == "X":
             check_for_cube(context, bpy.data, PATH)
+
+        date_unregister(PATH)
 
         return {'PASS_THROUGH'}
 
