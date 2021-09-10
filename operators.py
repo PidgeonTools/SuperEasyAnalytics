@@ -95,11 +95,35 @@ class SUPEREASYANALYTICS_OT_select_unapplied_scale(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class SUPEREASYANALYTICS_OT_select_flat_shaded(bpy.types.Operator):
+    """Select all objects that are not smooth-shaded."""
+    bl_idname = "supereasyanalytics.select_flat_shaded"
+    bl_label = "Select objects that are not smooth-shaded."
+    bl_options = {'UNDO'}
+
+    def execute(self, context):
+        for ob in context.scene.objects:
+            ob.select_set(False)
+
+            is_mesh = ob.type == "MESH"
+
+            if is_mesh:
+                shade_flat = False in [
+                    pol.use_smooth for pol in ob.data.polygons]
+
+            if is_mesh and shade_flat:
+                ob.select_set(True)
+                context.view_layer.objects.active = ob
+
+        return {'FINISHED'}
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
     SUPEREASYANALYTICS_OT_set_project_price,
-    SUPEREASYANALYTICS_OT_select_unapplied_scale
+    SUPEREASYANALYTICS_OT_select_unapplied_scale,
+    SUPEREASYANALYTICS_OT_select_flat_shaded
 )
 
 
