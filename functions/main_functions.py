@@ -81,6 +81,7 @@ def get_default_cubes(path):
     return int(decode_json(path)["default_cube"])
 
 
+# Get the count of undos.
 def get_undos(path):
     data = decode_json(path)
 
