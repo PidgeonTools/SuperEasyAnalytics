@@ -118,6 +118,7 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
 
         layout.operator("supereasyanalytics.select_unapplied_scale", text="Highlight unapplied scale")
         layout.operator("supereasyanalytics.select_flat_shaded", text="Highlight flat shaded objects")
+        layout.operator("supereasyanalytics.select_hidden_objects", text="Highlight hidden objects that will be rendered.")
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):

@@ -5,7 +5,8 @@ from bpy.props import (
 from os import path as p
 
 from .functions.main_functions import (
-    check_for_cube
+    check_for_cube,
+    highlight_object
 )
 from .functions.register_functions import (
     date_unregister
@@ -118,12 +119,43 @@ class SUPEREASYANALYTICS_OT_select_flat_shaded(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class SUPEREASYANALYTICS_OT_select_hidden_objects(bpy.types.Operator):
+    """Select all objects that are hidden but will be visible, when rendering."""
+    bl_idname = "supereasyanalytics.select_hidden_objects"
+    bl_label = "Select hidden objects that will be visible when rendering."
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def modal(self, context, event):
+        if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE", "WINDOW_DEACTIVATE", "WHEELDOWNMOUSE", 'WHEELUPMOUSE', 'MIDDLEMOUSE', 'RIGHT_SHIFT', 'LEFT_SHIFT']:
+            return {"PASS_THROUGH"}
+
+        for ob in self.hidden_objects:
+            ob.hide_set(True)
+
+        return {'FINISHED'}
+
+    def execute(self, context):
+        self.hidden_objects = []
+        for ob in context.scene.objects:
+            ob.select_set(False)
+            hidden = not ob.hide_render and ob.hide_get()
+            if hidden:
+                ob.hide_set(False)
+                ob.select_set(True)
+                self.hidden_objects.append(ob)
+            highlight_object(ob, hidden)
+
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
     SUPEREASYANALYTICS_OT_set_project_price,
     SUPEREASYANALYTICS_OT_select_unapplied_scale,
-    SUPEREASYANALYTICS_OT_select_flat_shaded
+    SUPEREASYANALYTICS_OT_select_flat_shaded,
+    SUPEREASYANALYTICS_OT_select_hidden_objects
 )
 
 

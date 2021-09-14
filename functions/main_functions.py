@@ -90,6 +90,29 @@ def get_undos(path):
     return 0
 
 
+# Highlight an object with a vertex color.
+def highlight_object(ob, set_color=False):
+    if not ob.type == "MESH":
+        return
+
+    if "SEA_Highlight" in ob.data.vertex_colors:
+        vc = ob.data.vertex_colors["SEA_Highlight"]
+    else:
+        vc = ob.data.vertex_colors.new(
+            name="SEA_Highlight", do_init=False)
+    vc.active = True
+
+    if set_color:
+        color = (0, 1, 0.0, 0)
+    else:
+        color = (1, 1, 1, 1)
+
+    for data in vc.data:
+        for c in data.color:
+            print(c)
+        data.color = color
+
+
 # Update the data to version 1.0.1!
 def update_json101(path):
     j = decode_json(path)
