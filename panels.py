@@ -116,9 +116,12 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
     def draw(self, context):
         layout = self.layout
 
-        layout.operator("supereasyanalytics.select_unapplied_scale", text="Highlight unapplied scale")
-        layout.operator("supereasyanalytics.select_flat_shaded", text="Highlight flat shaded objects")
-        layout.operator("supereasyanalytics.select_hidden_objects", text="Highlight hidden objects that will be rendered.")
+        layout.operator("supereasyanalytics.select_unapplied_scale",
+                        text="Highlight unapplied scale")
+        layout.operator("supereasyanalytics.select_flat_shaded",
+                        text="Highlight flat shaded objects")
+        layout.operator("supereasyanalytics.select_hidden_objects",
+                        text="Highlight hidden objects that will be rendered.")
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
@@ -171,12 +174,16 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
         if prefs.display_unit:
             display_unit = "minutes"
             project_time = round(bpy.project_time / 60)
+            render_time = round(context.scene.render_time / 60)
         else:
             display_unit = "hours"
             project_time = round(bpy.project_time / (60 * 60))
+            render_time = round(context.scene.render_time / (60 * 60))
 
         layout.label(
             text=f"You have spent {project_time} {display_unit} on this file so far.")
+        layout.label(
+            text=f"You have spent {render_time} {display_unit} for rendering this file.")
 
 
 def save_reminder(self, context):

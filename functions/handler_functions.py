@@ -80,11 +80,25 @@ def set_save_timestamp(*args):
     bpy.context.scene.save_timestamp = int(time.time())
 
 
+@persistent
+def set_render_timestamp(*args):
+    bpy.context.scene.render_timestamp = time.time()
+
+
+@persistent
+def set_render_time(*args):
+    render_timestamp = bpy.context.scene.render_timestamp
+    bpy.context.scene.render_time += time.time() - render_timestamp
+
+
 def register():
     bpy.app.handlers.load_post.append(startup_setup)
     bpy.app.handlers.undo_post.append(count_undo)
     bpy.app.handlers.save_pre.append(save_project_time)
     bpy.app.handlers.save_pre.append(set_save_timestamp)
+    bpy.app.handlers.render_init.append(set_render_timestamp)
+    bpy.app.handlers.render_complete.append(set_render_time)
+    bpy.app.handlers.render_cancel.append(set_render_time)
 
 
 def unregister():
@@ -92,3 +106,6 @@ def unregister():
     bpy.app.handlers.undo_post.remove(count_undo)
     bpy.app.handlers.save_pre.remove(save_project_time)
     bpy.app.handlers.save_pre.remove(set_save_timestamp)
+    bpy.app.handlers.render_init.remove(set_render_timestamp)
+    bpy.app.handlers.render_complete.remove(set_render_time)
+    bpy.app.handlers.render_cancel.remove(set_render_time)

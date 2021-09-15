@@ -91,7 +91,7 @@ def get_undos(path):
     return 0
 
 
-# Highlight an object with a vertex color.
+# Highlight an object using a vertex color.
 def highlight_object(ob, set_highlight_color=False):
     if not ob.type == "MESH":
         return
@@ -115,6 +115,7 @@ def highlight_object(ob, set_highlight_color=False):
             data.color = color
 
 
+# Set the viewport shading to vertex color for the highlighting.
 def set_viewport_shading(context, type, color_type):
     area = next(area for area in context.screen.areas if area.type == 'VIEW_3D')
     space = next(space for space in area.spaces if space.type == 'VIEW_3D')

@@ -55,6 +55,13 @@ def register_props():
     scene.save_timestamp = IntProperty(
         name="Save timestamp"
     )
+    scene.render_time = FloatProperty(
+        name="Render time",
+        default=0.0
+    )
+    scene.render_timestamp = FloatProperty(
+        name="Render timestamp"
+    )
 
 
 # Save the date and time on Blender Startup.
