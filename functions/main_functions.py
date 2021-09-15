@@ -92,26 +92,37 @@ def get_undos(path):
 
 
 # Highlight an object with a vertex color.
-def highlight_object(ob, set_color=False):
+def highlight_object(ob, set_highlight_color=False):
     if not ob.type == "MESH":
         return
 
-    if "SEA_Highlight" in ob.data.vertex_colors:
-        vc = ob.data.vertex_colors["SEA_Highlight"]
+    if "_SEA_Highlight" in ob.data.vertex_colors:
+        vc = ob.data.vertex_colors["_SEA_Highlight"]
     else:
         vc = ob.data.vertex_colors.new(
-            name="SEA_Highlight", do_init=False)
+            name="_SEA_Highlight", do_init=False)
     vc.active = True
 
-    if set_color:
-        color = (0, 1, 0.0, 0)
+    if set_highlight_color:
+        color = (0, 1, 0, 0)
     else:
-        color = (1, 1, 1, 1)
+        color = (1.0, 1.0, 1.0, 1.0)
 
-    for data in vc.data:
-        for c in data.color:
-            print(c)
-        data.color = color
+    set_color = tuple(vc.data[0].color) != color if vc.data else False
+
+    if set_color:
+        for data in vc.data:
+            data.color = color
+
+
+def set_viewport_shading(context, type, color_type):
+    area = next(area for area in context.screen.areas if area.type == 'VIEW_3D')
+    space = next(space for space in area.spaces if space.type == 'VIEW_3D')
+
+    space.shading.type = type
+    space.shading.color_type = color_type
+
+    return type, color_type
 
 
 # Update the data to version 1.0.1!

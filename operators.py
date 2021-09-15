@@ -6,7 +6,8 @@ from os import path as p
 
 from .functions.main_functions import (
     check_for_cube,
-    highlight_object
+    highlight_object,
+    set_viewport_shading
 )
 from .functions.register_functions import (
     date_unregister
@@ -90,9 +91,13 @@ class SUPEREASYANALYTICS_OT_select_unapplied_scale(bpy.types.Operator):
             if is_mesh:
                 multi_user = ob.data.users > 1
 
-            if is_mesh and not multi_user and not ob_scale == (1.0, 1.0, 1.0):
+            select = is_mesh and not multi_user and not ob_scale == (1.0, 1.0, 1.0)
+            if select:
                 ob.select_set(True)
 
+            highlight_object(ob, select)
+
+        set_viewport_shading(context, "SOLID", "VERTEX")
         return {'FINISHED'}
 
 
@@ -116,6 +121,10 @@ class SUPEREASYANALYTICS_OT_select_flat_shaded(bpy.types.Operator):
                 ob.select_set(True)
                 context.view_layer.objects.active = ob
 
+            highlight_object(ob, is_mesh and shade_flat)
+
+        set_viewport_shading(context, "SOLID", "VERTEX")
+
         return {'FINISHED'}
 
 
@@ -138,12 +147,16 @@ class SUPEREASYANALYTICS_OT_select_hidden_objects(bpy.types.Operator):
         self.hidden_objects = []
         for ob in context.scene.objects:
             ob.select_set(False)
+
             hidden = not ob.hide_render and ob.hide_get()
             if hidden:
                 ob.hide_set(False)
                 ob.select_set(True)
                 self.hidden_objects.append(ob)
+
             highlight_object(ob, hidden)
+
+        set_viewport_shading(context, "SOLID", "VERTEX")
 
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
