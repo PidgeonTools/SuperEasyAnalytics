@@ -2,6 +2,13 @@ import bpy
 from bpy.props import (
     FloatProperty,
 )
+from bpy.types import (
+    Context,
+    Event,
+    Operator
+)
+
+
 from os import path as p
 
 from .functions.main_functions import (
@@ -17,13 +24,13 @@ PATH = p.join(p.expanduser(
     "~"), "Blender Addons Data", "blender-analytics", "data.json")
 
 
-class SUPEREASYANALYTICS_OT_modal(bpy.types.Operator):
+class SUPEREASYANALYTICS_OT_modal(Operator):
     """Utility Operator that handles events in Blender."""
     bl_idname = "supereasyanalytics.modal"
     bl_label = "Operator"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def modal(self, context, event):
+    def modal(self, context: Context, event: Event):
         if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE"]:
             return {"PASS_THROUGH"}
 
@@ -38,24 +45,24 @@ class SUPEREASYANALYTICS_OT_modal(bpy.types.Operator):
 
         return {'PASS_THROUGH'}
 
-    def execute(self, context):
+    def execute(self, context: Context):
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
 
 
-class SUPEREASYANALYTICS_OT_save_reminder(bpy.types.Operator):
+class SUPEREASYANALYTICS_OT_save_reminder(Operator):
     """Reminder: You need to save"""
     bl_idname = "supereasyanalytics.save_reminder"
     bl_label = "Save your file!"
     bl_options = {'REGISTER', 'UNDO'}
 
-    def execute(self, context):
+    def execute(self, context: Context):
         bpy.ops.wm.save_mainfile('INVOKE_DEFAULT')
 
         return {'RUNNING_MODAL'}
 
 
-class SUPEREASYANALYTICS_OT_set_project_price(bpy.types.Operator):
+class SUPEREASYANALYTICS_OT_set_project_price(Operator):
     """Set the price you get paid for this project."""
     bl_idname = "supereasyanalytics.set_project_price"
     bl_label = "Set Project Price"
@@ -66,22 +73,22 @@ class SUPEREASYANALYTICS_OT_set_project_price(bpy.types.Operator):
         default=0.0
     )
 
-    def execute(self, context):
+    def execute(self, context: Context):
         context.scene.project_price = self.price
 
         return {'FINISHED'}
 
-    def invoke(self, context, event):
+    def invoke(self, context: Context, event: Event):
         return context.window_manager.invoke_props_dialog(self)
 
 
-class SUPEREASYANALYTICS_OT_select_unapplied_scale(bpy.types.Operator):
+class SUPEREASYANALYTICS_OT_select_unapplied_scale(Operator):
     """Select all objects with unapplied scale. Excludes linked duplicates, because scale can't be applied on linked duplicates!"""
     bl_idname = "supereasyanalytics.select_unapplied_scale"
     bl_label = "Select objects with unapplied scale"
     bl_options = {'UNDO'}
 
-    def execute(self, context):
+    def execute(self, context: Context):
         for ob in context.scene.objects:
             ob.select_set(False)
             ob_scale = (ob.scale.x, ob.scale.y, ob.scale.z)
@@ -91,7 +98,8 @@ class SUPEREASYANALYTICS_OT_select_unapplied_scale(bpy.types.Operator):
             if is_mesh:
                 multi_user = ob.data.users > 1
 
-            select = is_mesh and not multi_user and not ob_scale == (1.0, 1.0, 1.0)
+            select = is_mesh and not multi_user and not ob_scale == (
+                1.0, 1.0, 1.0)
             if select:
                 ob.select_set(True)
 
@@ -101,13 +109,13 @@ class SUPEREASYANALYTICS_OT_select_unapplied_scale(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class SUPEREASYANALYTICS_OT_select_flat_shaded(bpy.types.Operator):
+class SUPEREASYANALYTICS_OT_select_flat_shaded(Operator):
     """Select all objects that are not smooth-shaded."""
     bl_idname = "supereasyanalytics.select_flat_shaded"
     bl_label = "Select objects that are not smooth-shaded."
     bl_options = {'UNDO'}
 
-    def execute(self, context):
+    def execute(self, context: Context):
         for ob in context.scene.objects:
             ob.select_set(False)
 
@@ -128,13 +136,13 @@ class SUPEREASYANALYTICS_OT_select_flat_shaded(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class SUPEREASYANALYTICS_OT_select_hidden_objects(bpy.types.Operator):
+class SUPEREASYANALYTICS_OT_select_hidden_objects(Operator):
     """Select all objects that are hidden but will be visible, when rendering."""
     bl_idname = "supereasyanalytics.select_hidden_objects"
     bl_label = "Select hidden objects that will be visible when rendering."
     bl_options = {'REGISTER', 'UNDO'}
 
-    def modal(self, context, event):
+    def modal(self, context: Context, event: Event):
         if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE", "WINDOW_DEACTIVATE", "WHEELDOWNMOUSE", 'WHEELUPMOUSE', 'MIDDLEMOUSE', 'RIGHT_SHIFT', 'LEFT_SHIFT']:
             return {"PASS_THROUGH"}
 
@@ -143,7 +151,7 @@ class SUPEREASYANALYTICS_OT_select_hidden_objects(bpy.types.Operator):
 
         return {'FINISHED'}
 
-    def execute(self, context):
+    def execute(self, context: Context):
         self.hidden_objects = []
         for ob in context.scene.objects:
             ob.select_set(False)

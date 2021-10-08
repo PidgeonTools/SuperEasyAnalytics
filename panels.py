@@ -1,5 +1,9 @@
 import bpy
-from bpy.types import Panel
+from bpy.types import (
+    Context,
+    Panel,
+    UILayout
+)
 
 import os
 from os import path as p
@@ -27,14 +31,14 @@ class SUPEREASYANALYTICS_PT_main(Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
 
-    def draw(self, context):
+    def draw(self, context: Context):
         # Path to the Super Easy Analytics Data.
         path = p.join(p.expanduser("~"),
                       "Blender Addons Data",
                       "blender-analytics",
                       "data.json")
 
-        layout = self.layout
+        layout: UILayout = self.layout
 
         # First, calculate the usage time.
         date_unregister(path)
@@ -54,7 +58,7 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
     bl_region_type = 'UI'
     bl_parent_id = "SUPEREASYANALYTICS_PT_main"
 
-    def draw(self, context):
+    def draw(self, context: Context):
         prefs = context.preferences.addons[__package__].preferences
 
         # Path to the Super Easy Analytics Data.
@@ -63,7 +67,7 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
                       "blender-analytics",
                       "data.json")
 
-        layout = self.layout
+        layout: UILayout = self.layout
 
         # Manipulate the time based on the display settings.
         if prefs.display_unit:
@@ -113,8 +117,8 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
     bl_region_type = 'UI'
     bl_parent_id = "SUPEREASYANALYTICS_PT_main"
 
-    def draw(self, context):
-        layout = self.layout
+    def draw(self, context: Context):
+        layout: UILayout = self.layout
 
         layout.operator("supereasyanalytics.select_unapplied_scale",
                         text="Highlight unapplied scale")
@@ -137,7 +141,7 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
     def poll(cls, context):
         return context.preferences.addons[__package__].preferences.freelancer_stats
 
-    def draw(self, context):
+    def draw(self, context: Context):
         prefs = context.preferences.addons[__package__].preferences
 
         price_per_hour = round(
@@ -148,7 +152,7 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
         if price_per_hour > context.scene.project_price * 6:
             price_per_hour = context.scene.project_price * 6
 
-        layout = self.layout
+        layout: UILayout = self.layout
         if context.scene.project_price == 0:
             layout.operator("supereasyanalytics.set_project_price")
 
@@ -165,10 +169,10 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
     bl_region_type = 'UI'
     bl_parent_id = "SUPEREASYANALYTICS_PT_main"
 
-    def draw(self, context):
+    def draw(self, context: Context):
         prefs = context.preferences.addons[__package__].preferences
 
-        layout = self.layout
+        layout: UILayout = self.layout
 
         # Manipulate the time based on the display settings.
         if prefs.display_unit:
@@ -187,7 +191,7 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
 
 
 def save_reminder(self, context):
-    layout = self.layout
+    layout: UILayout = self.layout
 
     D = bpy.data
 

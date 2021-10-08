@@ -28,14 +28,19 @@ from bpy.props import (
 import os
 from os import path as p
 
+from bpy.types import (
+    AddonPreferences,
+    Context,
+    UILayout
+)
+
 from . import addon_updater_ops
 
 
-class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
+class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
     bl_idname = __package__
 
     # addon updater preferences
-
     auto_check_update: BoolProperty(
         name="Auto-check for Update",
         description="If enabled, auto-check for updates using an interval",
@@ -87,8 +92,8 @@ class SUPEREASYANALYTICS_APT_Preferences(bpy.types.AddonPreferences):
         default=5
     )
 
-    def draw(self, context):
-        layout = self.layout
+    def draw(self, context: Context):
+        layout: UILayout = self.layout
 
         username = p.basename(p.expanduser("~"))
         layout.label(

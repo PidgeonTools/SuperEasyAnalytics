@@ -25,6 +25,8 @@ import time
 import os
 from os import path as p
 
+from bpy.types import Context
+
 from .json_functions import (
     decode_json,
     encode_json
@@ -32,7 +34,7 @@ from .json_functions import (
 
 
 # Check, if the default cube has been deleted.
-def check_for_cube(context, data, path):
+def check_for_cube(context: Context, data, path):
     already_counted = context.scene.default_cube_deleted
     cube_deleted = False
 
@@ -116,7 +118,7 @@ def highlight_object(ob, set_highlight_color=False):
 
 
 # Set the viewport shading to vertex color for the highlighting.
-def set_viewport_shading(context, type, color_type):
+def set_viewport_shading(context: Context, type, color_type):
     area = next(area for area in context.screen.areas if area.type == 'VIEW_3D')
     space = next(space for space in area.spaces if space.type == 'VIEW_3D')
 

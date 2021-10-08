@@ -26,6 +26,11 @@ from os import path as p
 
 import time
 
+from bpy.types import (
+    Context,
+    Scene
+)
+
 from .json_functions import (
     decode_json,
     encode_json
@@ -55,7 +60,8 @@ def count_undo(*args):
 
 @persistent
 def startup_setup(*args):
-    scene = bpy.context.scene
+    context: Context = bpy.context
+    scene: Scene = context.scene
     path = p.join(p.expanduser(
         "~"), "Blender Addons Data", "blender-analytics", "data.json")
 
@@ -66,29 +72,33 @@ def startup_setup(*args):
     if not hasattr(scene, "save_timestamp"):
         register_props()
 
-    bpy.project_time = bpy.context.scene.project_time
+    bpy.project_time = context.scene.project_time
     print(bpy.ops.supereasyanalytics.modal())
 
 
 @persistent
 def save_project_time(*args):
-    bpy.context.scene.project_time = bpy.project_time
+    context: Context = bpy.context
+    context.scene.project_time = bpy.project_time
 
 
 @persistent
 def set_save_timestamp(*args):
-    bpy.context.scene.save_timestamp = int(time.time())
+    context: Context = bpy.context
+    context.scene.save_timestamp = int(time.time())
 
 
 @persistent
 def set_render_timestamp(*args):
-    bpy.context.scene.render_timestamp = time.time()
+    context: Context = bpy.context
+    context.scene.render_timestamp = time.time()
 
 
 @persistent
 def set_render_time(*args):
-    render_timestamp = bpy.context.scene.render_timestamp
-    bpy.context.scene.render_time += time.time() - render_timestamp
+    context: Context = bpy.context
+    render_timestamp = context.scene.render_timestamp
+    context.scene.render_time += time.time() - render_timestamp
 
 
 def register():
