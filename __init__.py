@@ -20,8 +20,6 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-import bpy
-
 import os
 from os import path as p
 
@@ -71,12 +69,7 @@ PATH = p.join(p.expanduser(
     "~"), "Blender Addons Data", "blender-analytics", "data.json")
 
 
-def register():
-    prefs.register(bl_info)
-
-    for mod in modules:
-        mod.register()
-
+def register() -> None:
     # Create the Super Easy Analytics Data Directory, if it doesn't exist already.
     if not p.isdir(p.dirname(PATH)):
         os.makedirs(p.dirname(PATH))
@@ -90,8 +83,13 @@ def register():
                                "data.json"),
                         PATH)
 
+    prefs.register(bl_info)
 
-def unregister():
+    for mod in modules:
+        mod.register()
+
+
+def unregister() -> None:
     for mod in reversed(modules):
         mod.unregister()
 
