@@ -132,7 +132,7 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         layout.separator()
         col = layout.column()
         op = col.operator("wm.url_open", text="Support", icon="URL")
-        op.url = "https://discord.gg/853VrMEGPM"
+        op.url = "https://discord.gg/grvMQuh6ru"
 
 
 classes = (
