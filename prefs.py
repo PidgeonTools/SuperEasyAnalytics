@@ -22,6 +22,7 @@
 import bpy
 from bpy.props import (
     BoolProperty,
+    FloatProperty,
     IntProperty
 )
 
@@ -86,10 +87,11 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         default=False
     )
 
-    save_reminder_interval: IntProperty(
+    save_reminder_interval: FloatProperty(
         name="Save Reminder Interval",
         description="Number of minutes until reminding you to save.",
-        default=5
+        min=0.0,
+        default=5.0
     )
 
     def draw(self, context: Context):
