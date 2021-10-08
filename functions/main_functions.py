@@ -34,44 +34,57 @@ from .json_functions import (
 
 
 # Check, if the default cube has been deleted.
-def check_for_cube(context: Context, data, path):
+def check_for_cube(context: Context, data, path) -> bool:
     already_counted = context.scene.default_cube_deleted
     cube_deleted = False
 
-    if "Cube" in data.meshes.keys():
+    if "Cube" in data.meshes.keys():  # Check, that the default cube mesh exists.
+        # The default cube was deleted, when it has 0 users.
         cube_deleted = data.meshes['Cube'].users == 0
 
     if cube_deleted and not already_counted:
+        # Get the SEA data.
         j = decode_json(path)
 
+        # Increment the default cube counter.
         j["default_cube"] += 1
         context.scene.default_cube_deleted = True
 
+        # Encode the SEA data.
         encode_json(j, path)
+
+        return cube_deleted
+
+    return False
 
 
 # Get the usage time from yesterday.
-def get_yesterday(path):
+def get_yesterday(path) -> int:
     return decode_json(path)["time_yesterday"]
 
 
 # Get the usage time from today.
-def get_today(path):
+def get_today(path) -> float:
     return round(decode_json(path)["time_today"] / 60)
 
 
 # Get the usage time from the last week
-def get_last_week(path):
-    data = decode_json(path)
-    current_time = time.time()
-    time_last_week = round(data["time_today"] / 60)
-
+def get_last_week(path) -> float:
     DAY_IN_SECONDS = 60 * 60 * 24
     FORMAT = "%Y-%m-%d"
 
-    for i in range(1, 8):
+    data = decode_json(path)  # Get the SEA data.
+    current_time = time.time()  # Get the current time.
+
+    # Initialise time_last_week to today's usage time.
+    time_last_week = round(data["time_today"] / 60)
+
+    for i in range(1, 8):  # yesterday to seven days ago
+        # Generate a string of the day i, using the format of the SEA data file.
         day = time.strftime(FORMAT, time.localtime(
             current_time - i * DAY_IN_SECONDS))
+
+        # Add the day i to the last weeks time, if it exists in the list.
         if day in data["dates_hours_alignment"].keys():
             time_last_week += data["dates_hours_alignment"][day]
 
@@ -79,12 +92,12 @@ def get_last_week(path):
 
 
 # Get the count of deleted default cubes.
-def get_default_cubes(path):
+def get_default_cubes(path) -> int:
     return int(decode_json(path)["default_cube"])
 
 
 # Get the count of undos.
-def get_undos(path):
+def get_undos(path) -> int:
     data = decode_json(path)
 
     if "undo_count" in data.keys():
@@ -94,80 +107,103 @@ def get_undos(path):
 
 
 # Highlight an object using a vertex color.
-def highlight_object(ob, set_highlight_color=False):
+def highlight_object(ob, set_highlight_color=False) -> None:
+    # Abort, if the given object isn't a mesh.
     if not ob.type == "MESH":
         return
 
+    # Get the SEA Highlight Vertex Color or create it, if it doesn't exist.
     if "_SEA_Highlight" in ob.data.vertex_colors:
-        vc = ob.data.vertex_colors["_SEA_Highlight"]
+        vertex_color = ob.data.vertex_colors["_SEA_Highlight"]
     else:
-        vc = ob.data.vertex_colors.new(
+        vertex_color = ob.data.vertex_colors.new(
             name="_SEA_Highlight", do_init=False)
-    vc.active = True
 
+    # Set the SEA Vertex Color active.
+    vertex_color.active = True
+
+    # Set the color, that the object should have.
     if set_highlight_color:
         color = (0, 1, 0, 0)
     else:
-        color = (1.0, 1.0, 1.0, 1.0)
+        color = (1, 1, 1, 1)
 
-    set_color = tuple(vc.data[0].color) != color if vc.data else False
+    # Check, if the vertex color needs to be changed.
+    set_color = tuple(
+        vertex_color.data[0].color) != color if vertex_color.data else False
 
+    # Change the vertex color, if necessary.
     if set_color:
-        for data in vc.data:
+        for data in vertex_color.data:
             data.color = color
 
 
 # Set the viewport shading to vertex color for the highlighting.
-def set_viewport_shading(context: Context, type, color_type):
+def set_viewport_shading(context: Context, type, color_type) -> None:
     area = next(area for area in context.screen.areas if area.type == 'VIEW_3D')
     space = next(space for space in area.spaces if space.type == 'VIEW_3D')
 
     space.shading.type = type
     space.shading.color_type = color_type
 
-    return type, color_type
-
 
 # Update the data to version 1.0.1!
-def update_json101(path):
+def update_json101(path) -> dict:
+    # Get the SEA data
     j = decode_json(path)
 
-    j["check_update"] = 101
-
+    # Update the dates_hours_alignment to use minutes instead of hours.
     for i in j["dates_hours_alignment"]:
         j["dates_hours_alignment"][i] = round(
             j["dates_hours_alignment"][i] * 60, 2)
 
+    # Update the time values to use minutes instead of hours.
     j["time_yesterday"] = round(j["time_yesterday"] * 60, 2)
     j["time_today"] = round(j["time_today"] * 60, 2)
 
+    # Update the file version number.
+    j["check_update"] = 101
+
+    # Save the SEA data.
     encode_json(j, path)
+
+    return j
 
 
 # Update the data to version 1.1.0!
-def update_json_and_data110(path):
+def update_json_and_data110(path) -> dict:
+    # Decode the SEA data.
     j = decode_json(path)
 
+    # Update the file version number.
     j["check_update"] = 110
 
-    encode_json(j, path)
-
+    # Filenames of the DB files that should be deleted.
     db_filenames = ["Blender Analytics c704d36c50269763b8bce4479f.db",
                     "Blender Analytics e6017460ea3479e67886f3430845.db"]
 
+    # Delete the DB files.
     for file in db_filenames:
         file = p.join(p.dirname(path), file)
         if p.exists(file):
             os.remove(file)
 
+    # Save the SEA data.
+    encode_json(j, path)
 
-def update_json_and_data120(path):
+    return j
+
+
+def update_json_and_data120(path) -> dict:
     FORMAT = "[%d, %m, %Y]"
 
+    # Get the SEA data.
     j = decode_json(path)
 
+    # Get the items of the dates_hours_alignment.
     elements = list(j["dates_hours_alignment"].keys())
 
+    # Change the labels of the items.
     for i in elements:
         try:
             new_label = time.strftime("%Y-%m-%d", time.strptime(i, FORMAT))
@@ -176,20 +212,34 @@ def update_json_and_data120(path):
         j["dates_hours_alignment"][new_label] = j["dates_hours_alignment"].pop(
             i)
 
+    # Change the format of start_time to be seconds since the epoch.
+    j["start_time"] = 1581030000
+
+    # Add the undo counter.
+    j["undo_count"] = 0
+
+    # Update the data version number.
     j["check_update"] = 120
 
+    # Save the SEA data.
     encode_json(j, path)
+
+    return j
 
 
 # Checks the version of the JSON Data file and updates, if necessary.
-def update_json(path):
+def update_json(path) -> None:
+    # Get the SEA data.
     j = decode_json(path)
 
+    # Update the file to version 1.0.1
     if not "check_update" in j.keys():
-        update_json101(path)
+        j = update_json101(path)
 
+    # Update the file to version 1.1.0
     if j["check_update"] == 101:
-        update_json_and_data110(path)
+        j = update_json_and_data110(path)
 
+    # Update the file to version 1.2.0
     if j["check_update"] == 110:
-        update_json_and_data120(path)
+        j = update_json_and_data120(path)
