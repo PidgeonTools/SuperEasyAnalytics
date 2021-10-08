@@ -1,10 +1,7 @@
 {
     "default_cube": 0,
-    "start_time": [
-        0,
-        0,
-        0
-    ],
+    "undo_count": 0,
+    "start_time": 1581030000,
     "date": [
         0,
         0,
@@ -15,5 +12,5 @@
     "dates_hours_alignment": {
         "['Note: This means minutes since version 1.0.1']": 0.0
     },
-    "check_update": 101
+    "check_update": 120
 }

@@ -42,59 +42,64 @@ from .register_functions import (
     date_register
 )
 
+PATH = p.join(p.expanduser("~"), "Blender Addons Data",
+              "blender-analytics", "data.json")
+
 
 # Count the number of undos
-@persistent
+@persistent  # Keep the function registered across multiple files.
 def count_undo(*args):
-    path = p.join(p.expanduser(
-        "~"), "Blender Addons Data", "blender-analytics", "data.json")
-    data = decode_json(path)
+    # Get the SEA data.
+    data = decode_json(PATH)
 
+    # Add undo count to data.json, if it doesn't exist.
     if not "undo_count" in data.keys():
         data["undo_count"] = 0
 
+    # Increment the undo count by one.
     data["undo_count"] += 1
 
-    encode_json(data, path)
+    # Encode the SEA data.
+    encode_json(data, PATH)
 
 
-@persistent
+@persistent  # Keep the function registered across multiple files.
 def startup_setup(*args):
     context: Context = bpy.context
     scene: Scene = context.scene
-    path = p.join(p.expanduser(
-        "~"), "Blender Addons Data", "blender-analytics", "data.json")
 
     # Save the date/time at startup.
-    date_register(path)
+    date_register(PATH)
 
     # Register all custom properties in the file.
     if not hasattr(scene, "save_timestamp"):
         register_props()
 
+    # Add the project_time attribute to bpy, because bpy.context is read-only in draw()
     bpy.project_time = context.scene.project_time
-    print(bpy.ops.supereasyanalytics.modal())
+    print(bpy.ops.supereasyanalytics.modal())  # Debugging only
 
 
-@persistent
+@persistent  # Keep the function registered across multiple files.
 def save_project_time(*args):
     context: Context = bpy.context
     context.scene.project_time = bpy.project_time
 
 
-@persistent
+@persistent  # Keep the function registered across multiple files.
 def set_save_timestamp(*args):
     context: Context = bpy.context
     context.scene.save_timestamp = int(time.time())
 
 
-@persistent
+@persistent  # Keep the function registered across multiple files.
 def set_render_timestamp(*args):
     context: Context = bpy.context
     context.scene.render_timestamp = time.time()
 
 
-@persistent
+# Save the render time to bpy.context after rendering.
+@persistent  # Keep the function registered across multiple files.
 def set_render_time(*args):
     context: Context = bpy.context
     render_timestamp = context.scene.render_timestamp
