@@ -22,6 +22,14 @@ from .functions.register_functions import (
     date_unregister
 )
 
+from .operators import (
+    SUPEREASYANALYTICS_OT_select_unapplied_scale,
+    SUPEREASYANALYTICS_OT_select_flat_shaded,
+    SUPEREASYANALYTICS_OT_select_hidden_objects,
+    SUPEREASYANALYTICS_OT_set_project_price,
+    SUPEREASYANALYTICS_OT_save_reminder
+)
+
 
 class SUPEREASYANALYTICS_PT_main(Panel):
     """Panel of the Super Easy Analytics Addon"""
@@ -120,11 +128,11 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
     def draw(self, context: Context):
         layout: UILayout = self.layout
 
-        layout.operator("supereasyanalytics.select_unapplied_scale",
+        layout.operator(SUPEREASYANALYTICS_OT_select_unapplied_scale.bl_idname,
                         text="Highlight unapplied scale")
-        layout.operator("supereasyanalytics.select_flat_shaded",
+        layout.operator(SUPEREASYANALYTICS_OT_select_flat_shaded.bl_idname,
                         text="Highlight flat shaded objects")
-        layout.operator("supereasyanalytics.select_hidden_objects",
+        layout.operator(SUPEREASYANALYTICS_OT_select_hidden_objects.bl_idname,
                         text="Highlight hidden objects that will be rendered.")
 
 
@@ -154,7 +162,7 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
 
         layout: UILayout = self.layout
         if context.scene.project_price == 0:
-            layout.operator("supereasyanalytics.set_project_price")
+            layout.operator(SUPEREASYANALYTICS_OT_set_project_price.bl_idname)
 
         layout.label(
             text=f"At your current working time, you're getting paid ${price_per_hour} per hour.")
@@ -200,7 +208,8 @@ def save_reminder(self, context):
         time.time()) - context.scene.save_timestamp
 
     if not D.is_saved or (D.is_dirty and remind):
-        layout.operator("supereasyanalytics.save_reminder", icon="ERROR")
+        layout.operator(
+            SUPEREASYANALYTICS_OT_save_reminder.bl_idname, icon="ERROR")
 
 
 classes = (
