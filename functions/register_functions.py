@@ -39,7 +39,7 @@ from .json_functions import (
 scene = bpy.types.Scene
 
 
-def register_props():
+def register_props() -> None:
     scene.default_cube_deleted = BoolProperty(
         name="Default cube deleted",
         default=False
@@ -65,36 +65,52 @@ def register_props():
 
 
 # Save the date and time on Blender Startup.
-def date_register(path):
+def date_register(path) -> None:
+    # Get the SEA data.
     j = decode_json(path)
+
+    # Get the current date.
     date = [time.localtime()[2], time.localtime()[1], time.localtime()[0]]
 
     if j["date"] != date:
-        j_date = time.strftime(
+        # Set the label for the dates_hours_alignment.
+        label = time.strftime(
             "%Y-%m-%d", time.strptime(str(j["date"]), "[%d, %m, %Y]"))
 
-        j["dates_hours_alignment"][j_date] = round(j["time_today"] / 60)
+        # Update the SEA data.
+        j["dates_hours_alignment"][label] = round(j["time_today"] / 60)
         j["date"] = date
         j["time_yesterday"] = round(j["time_today"] / 60)
         j["time_today"] = 0.00
 
+    # Set the start time.
     j["start_time"] = int(time.time())
+
+    # Save the SEA data.
     encode_json(j, path)
 
 
 # Save the difference between the start date/time and the end date/time as Blender usage time.
 # Save the current date/time as new start date/time.
-def date_unregister(path):
+def date_unregister(path) -> None:
+    THRESHHOLD = 30
+
+    # Get the SEA data.
     j = decode_json(path)
 
+    # Get the current time
     current_time = int(time.time())
 
+    # Calculate the total seconds since the last event.
+    # Ignore the time, if nothing happened for longer than a certain threshhold.
     total_seconds = current_time - j["start_time"]
-    if total_seconds > 30:
+    if total_seconds > THRESHHOLD:
         total_seconds = 0
 
+    # Add the calculated time to the data and update the start time.
     j["time_today"] += total_seconds
     bpy.project_time += total_seconds
     j["start_time"] = current_time
 
+    # Save the SEA data.
     encode_json(j, path)
