@@ -7,6 +7,10 @@ from bpy.types import (
     Event,
     Operator
 )
+from bpy.utils import (
+    register_class,
+    unregister_class
+)
 
 
 from os import path as p
@@ -198,9 +202,9 @@ classes = (
 
 def register():
     for cls in classes:
-        bpy.utils.register_class(cls)
+        register_class(cls)
 
 
 def unregister():
     for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+        unregister_class(cls)

@@ -4,6 +4,10 @@ from bpy.types import (
     Panel,
     UILayout
 )
+from bpy.utils import (
+    register_class,
+    unregister_class
+)
 
 import os
 from os import path as p
@@ -222,14 +226,14 @@ classes = (
 
 
 def register():
-    from bpy.utils import register_class
     for cls in classes:
         register_class(cls)
+
     bpy.types.VIEW3D_HT_header.append(save_reminder)
 
 
 def unregister():
-    from bpy.utils import unregister_class
     for cls in reversed(classes):
         unregister_class(cls)
+
     bpy.types.VIEW3D_HT_header.remove(save_reminder)

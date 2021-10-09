@@ -25,6 +25,10 @@ from bpy.props import (
     FloatProperty,
     IntProperty
 )
+from bpy.utils import (
+    register_class,
+    unregister_class
+)
 
 import os
 from os import path as p
@@ -151,7 +155,7 @@ def register(bl_info):
     for cls in classes:
         addon_updater_ops.make_annotations(
             cls)  # to avoid blender 2.8 warnings
-        bpy.utils.register_class(cls)
+        register_class(cls)
 
 
 def unregister():
@@ -159,4 +163,4 @@ def unregister():
     addon_updater_ops.unregister()
     # register the example panel, to show updater buttons
     for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+        unregister_class(cls)
