@@ -65,7 +65,7 @@ def register_props() -> None:
 
 
 # Save the date and time on Blender Startup.
-def date_register(path) -> None:
+def date_register(path: str) -> None:
     # Get the SEA data.
     j = decode_json(path)
 
@@ -92,7 +92,7 @@ def date_register(path) -> None:
 
 # Save the difference between the start date/time and the end date/time as Blender usage time.
 # Save the current date/time as new start date/time.
-def date_unregister(path) -> None:
+def date_unregister(path: str) -> None:
     THRESHHOLD = 30
 
     # Get the SEA data.

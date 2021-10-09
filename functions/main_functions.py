@@ -20,12 +20,16 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-import time
+import bpy
+from bpy.types import (
+    Context,
+    Object
+)
 
 import os
 from os import path as p
 
-from bpy.types import Context
+import time
 
 from .json_functions import (
     decode_json,
@@ -34,7 +38,7 @@ from .json_functions import (
 
 
 # Check, if the default cube has been deleted.
-def check_for_cube(context: Context, data, path) -> bool:
+def check_for_cube(context: Context, data: bpy.data, path: str) -> bool:
     already_counted = context.scene.default_cube_deleted
     cube_deleted = False
 
@@ -59,17 +63,17 @@ def check_for_cube(context: Context, data, path) -> bool:
 
 
 # Get the usage time from yesterday.
-def get_yesterday(path) -> int:
+def get_yesterday(path: str) -> int:
     return decode_json(path)["time_yesterday"]
 
 
 # Get the usage time from today.
-def get_today(path) -> float:
+def get_today(path: str) -> float:
     return round(decode_json(path)["time_today"] / 60)
 
 
 # Get the usage time from the last week
-def get_last_week(path) -> float:
+def get_last_week(path: str) -> float:
     DAY_IN_SECONDS = 60 * 60 * 24
     FORMAT = "%Y-%m-%d"
 
@@ -92,12 +96,12 @@ def get_last_week(path) -> float:
 
 
 # Get the count of deleted default cubes.
-def get_default_cubes(path) -> int:
+def get_default_cubes(path: str) -> int:
     return int(decode_json(path)["default_cube"])
 
 
 # Get the count of undos.
-def get_undos(path) -> int:
+def get_undos(path: str) -> int:
     data = decode_json(path)
 
     if "undo_count" in data.keys():
@@ -107,7 +111,7 @@ def get_undos(path) -> int:
 
 
 # Highlight an object using a vertex color.
-def highlight_object(ob, set_highlight_color=False) -> None:
+def highlight_object(ob: Object, set_highlight_color=False) -> None:
     # Abort, if the given object isn't a mesh.
     if not ob.type == "MESH":
         return
@@ -139,7 +143,7 @@ def highlight_object(ob, set_highlight_color=False) -> None:
 
 
 # Set the viewport shading to vertex color for the highlighting.
-def set_viewport_shading(context: Context, type, color_type) -> None:
+def set_viewport_shading(context: Context, type: str, color_type: str) -> None:
     area = next(area for area in context.screen.areas if area.type == 'VIEW_3D')
     space = next(space for space in area.spaces if space.type == 'VIEW_3D')
 
@@ -148,7 +152,7 @@ def set_viewport_shading(context: Context, type, color_type) -> None:
 
 
 # Update the data to version 1.0.1!
-def update_json101(path) -> dict:
+def update_json101(path: str) -> dict:
     # Get the SEA data
     j = decode_json(path)
 
@@ -171,7 +175,7 @@ def update_json101(path) -> dict:
 
 
 # Update the data to version 1.1.0!
-def update_json_and_data110(path) -> dict:
+def update_json_and_data110(path: str) -> dict:
     # Decode the SEA data.
     j = decode_json(path)
 
@@ -194,7 +198,7 @@ def update_json_and_data110(path) -> dict:
     return j
 
 
-def update_json_and_data120(path) -> dict:
+def update_json_and_data120(path: str) -> dict:
     FORMAT = "[%d, %m, %Y]"
 
     # Get the SEA data.
@@ -228,7 +232,7 @@ def update_json_and_data120(path) -> dict:
 
 
 # Checks the version of the JSON Data file and updates, if necessary.
-def update_json(path) -> None:
+def update_json(path: str) -> None:
     # Get the SEA data.
     j = decode_json(path)
 
