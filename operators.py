@@ -92,10 +92,10 @@ class SUPEREASYANALYTICS_OT_set_project_price(Operator):
         return context.window_manager.invoke_props_dialog(self)
 
 
-class SUPEREASYANALYTICS_OT_select_unapplied_scale(Operator):
-    """Select all objects with unapplied scale. Excludes linked duplicates, because scale can't be applied on linked duplicates!"""
-    bl_idname = "supereasyanalytics.select_unapplied_scale"
-    bl_label = "Select objects with unapplied scale"
+class SUPEREASYANALYTICS_OT_highlight_unapplied_scale(Operator):
+    """Select all objects with unapplied scale. Linked duplicates are highlighted with a color, but not selected, because scale can't be applied on linked duplicates"""
+    bl_idname = "supereasyanalytics.highlight_unapplied_scale"
+    bl_label = "Highlight objects with unapplied scale"
     bl_options = {'UNDO'}
 
     def execute(self, context: Context):
@@ -121,10 +121,10 @@ class SUPEREASYANALYTICS_OT_select_unapplied_scale(Operator):
         return {'FINISHED'}
 
 
-class SUPEREASYANALYTICS_OT_select_flat_shaded(Operator):
-    """Select all objects that are not smooth-shaded."""
-    bl_idname = "supereasyanalytics.select_flat_shaded"
-    bl_label = "Select objects that are not smooth-shaded."
+class SUPEREASYANALYTICS_OT_highlight_flat_shaded(Operator):
+    """Highlight all objects that are not smooth-shaded"""
+    bl_idname = "supereasyanalytics.highlight_flat_shaded"
+    bl_label = "Highlight objects that are not smooth-shaded."
     bl_options = {'UNDO'}
 
     def execute(self, context: Context):
@@ -150,10 +150,10 @@ class SUPEREASYANALYTICS_OT_select_flat_shaded(Operator):
         return {'FINISHED'}
 
 
-class SUPEREASYANALYTICS_OT_select_hidden_objects(Operator):
-    """Select all objects that are hidden but will be visible, when rendering."""
-    bl_idname = "supereasyanalytics.select_hidden_objects"
-    bl_label = "Select hidden objects that will be visible when rendering."
+class SUPEREASYANALYTICS_OT_highlight_hidden_objects(Operator):
+    """Highlight all objects that are hidden but will be visible, when rendering"""
+    bl_idname = "supereasyanalytics.highlight_hidden_objects"
+    bl_label = "Highlight hidden objects that will be visible when rendering."
     bl_options = {'REGISTER', 'UNDO'}
 
     def modal(self, context: Context, event: Event):
@@ -194,9 +194,9 @@ classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
     SUPEREASYANALYTICS_OT_set_project_price,
-    SUPEREASYANALYTICS_OT_select_unapplied_scale,
-    SUPEREASYANALYTICS_OT_select_flat_shaded,
-    SUPEREASYANALYTICS_OT_select_hidden_objects
+    SUPEREASYANALYTICS_OT_highlight_unapplied_scale,
+    SUPEREASYANALYTICS_OT_highlight_flat_shaded,
+    SUPEREASYANALYTICS_OT_highlight_hidden_objects
 )
 
 

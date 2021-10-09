@@ -27,9 +27,9 @@ from .functions.register_functions import (
 )
 
 from .operators import (
-    SUPEREASYANALYTICS_OT_select_unapplied_scale,
-    SUPEREASYANALYTICS_OT_select_flat_shaded,
-    SUPEREASYANALYTICS_OT_select_hidden_objects,
+    SUPEREASYANALYTICS_OT_highlight_unapplied_scale,
+    SUPEREASYANALYTICS_OT_highlight_flat_shaded,
+    SUPEREASYANALYTICS_OT_highlight_hidden_objects,
     SUPEREASYANALYTICS_OT_set_project_price,
     SUPEREASYANALYTICS_OT_save_reminder
 )
@@ -132,12 +132,13 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
     def draw(self, context: Context):
         layout: UILayout = self.layout
 
-        layout.operator(SUPEREASYANALYTICS_OT_select_unapplied_scale.bl_idname,
+        layout.operator(SUPEREASYANALYTICS_OT_highlight_unapplied_scale.bl_idname,
                         text="Highlight unapplied scale")
-        layout.operator(SUPEREASYANALYTICS_OT_select_flat_shaded.bl_idname,
+        layout.operator(SUPEREASYANALYTICS_OT_highlight_flat_shaded.bl_idname,
                         text="Highlight flat shaded objects")
-        layout.operator(SUPEREASYANALYTICS_OT_select_hidden_objects.bl_idname,
-                        text="Highlight hidden objects that will be rendered.")
+        layout.operator(SUPEREASYANALYTICS_OT_highlight_hidden_objects.bl_idname,
+                        text="Highlight hidden objects that will be rendered.")  # ,
+        # icon="RESTRICT_RENDER_OFF")  # TODO: Add icon or not?
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
