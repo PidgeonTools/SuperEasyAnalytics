@@ -19,7 +19,6 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-import bpy
 from bpy.props import (
     BoolProperty,
     FloatProperty,
@@ -29,15 +28,13 @@ from bpy.utils import (
     register_class,
     unregister_class
 )
-
-import os
-from os import path as p
-
 from bpy.types import (
     AddonPreferences,
     Context,
     UILayout
 )
+
+from os import path as p
 
 from . import addon_updater_ops
 
@@ -101,12 +98,15 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
     def draw(self, context: Context):
         layout: UILayout = self.layout
 
+        # Get the username of the logged in user.
         username = p.basename(p.expanduser("~"))
         layout.label(
             text=f"Hello {username}, here are your Addon Preferences:")
 
+        # Layout the setting for turning the freelancer stats on / off.
         layout.prop(self, "freelancer_stats")
 
+        # Layout the setting for the display unit.
         if self.display_unit:
             layout.prop(self, "display_unit", toggle=True,
                         text="Active Display Unit: Minutes")
@@ -114,6 +114,7 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
             layout.prop(self, "display_unit", toggle=True,
                         text="Active Display Unit: Hours")
 
+        # Layout the save reminder interval setting.
         layout.prop(self, "save_reminder_interval")
 
         # col = layout.column() # works best if a column, or even just self.layout
@@ -135,6 +136,7 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         # col.scale_y = 2
         # col.operator("wm.url_open","Open webpage ").url=addon_updater_ops.updater.website
 
+        # Layout the discord URL.
         layout.separator()
         col = layout.column()
         op = col.operator("wm.url_open", text="Support", icon="URL")
