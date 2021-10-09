@@ -155,7 +155,7 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
         return context.preferences.addons[__package__].preferences.freelancer_stats
 
     def draw(self, context: Context):
-        prefs = context.preferences.addons[__package__].preferences
+        layout: UILayout = self.layout
 
         price_per_hour = round(
             (context.scene.project_price / (bpy.project_time + 1)) * 60 * 60, 2)
@@ -165,10 +165,11 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
         if price_per_hour > context.scene.project_price * 6:
             price_per_hour = context.scene.project_price * 6
 
-        layout: UILayout = self.layout
+        # Give the option to set the project price, if it is not set.
         if context.scene.project_price == 0:
             layout.operator(SUPEREASYANALYTICS_OT_set_project_price.bl_idname)
 
+        # Layout the Price per hour.
         layout.label(
             text=f"At your current working time, you're getting paid ${price_per_hour} per hour.")
 
@@ -197,6 +198,7 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
             project_time = round(bpy.project_time / (60 * 60))
             render_time = round(context.scene.render_time / (60 * 60))
 
+        # Layout the scene statistics.
         layout.label(
             text=f"You have spent {project_time} {display_unit} on this file so far.")
         layout.label(
@@ -204,14 +206,17 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
 
 
 def save_reminder(self, context):
-    layout: UILayout = self.layout
-
     D = bpy.data
 
     prefs = context.preferences.addons[__package__].preferences
+
+    layout: UILayout = self.layout
+
+    # Determine, whether to remind the user of saving the file.
     remind = prefs.save_reminder_interval * 60 <= int(
         time.time()) - context.scene.save_timestamp
 
+    # Display the reminder, if the file has unsaved changes and remind is True.
     if not D.is_saved or (D.is_dirty and remind):
         layout.operator(
             SUPEREASYANALYTICS_OT_save_reminder.bl_idname, icon="ERROR")
