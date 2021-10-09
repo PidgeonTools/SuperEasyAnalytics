@@ -31,21 +31,26 @@ class SUPEREASYANALYTICS_OT_modal(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def modal(self, context: Context, event: Event):
+        # Do nothing, if only the mouse is moved.
         if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE"]:
             return {"PASS_THROUGH"}
 
+        # Do nothing, if Blender is deactivated.
         if event.type == "WINDOW_DEACTIVATE":
-            print("Deactivated Blender!")
+            print("Deactivated Blender!")  # Debugging only
             return {'PASS_THROUGH'}
 
+        # Check, if the default cube was deleted, if X is pressed (? TODO: Is this necessary ?)
         if event.type == "X":
-            check_for_cube(context, bpy.data, PATH)
+            show_graveyard_animation = check_for_cube(context, bpy.data, PATH)
 
+        # Update the time counter.
         date_unregister(PATH)
 
         return {'PASS_THROUGH'}
 
     def execute(self, context: Context):
+        # Start the modal Operation.
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
 
@@ -57,6 +62,7 @@ class SUPEREASYANALYTICS_OT_save_reminder(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context: Context):
+        # Save the current file. Show the file dialog, if the file isn't saved anywhere.
         bpy.ops.wm.save_mainfile('INVOKE_DEFAULT')
 
         return {'RUNNING_MODAL'}
@@ -93,18 +99,20 @@ class SUPEREASYANALYTICS_OT_select_unapplied_scale(Operator):
             ob.select_set(False)
             ob_scale = (ob.scale.x, ob.scale.y, ob.scale.z)
 
-            is_mesh = ob.type == "MESH"
-            multi_user = False
-            if is_mesh:
-                multi_user = ob.data.users > 1
+            # Abort, if the current object is not a mesh.
+            if not ob.type == "MESH":
+                continue
 
-            select = is_mesh and not multi_user and not ob_scale == (
-                1.0, 1.0, 1.0)
-            if select:
+            # Check, if the object has unapplied scale
+            # and is not a multi user and select it, if that's the case.
+            select = ob_scale != (1.0, 1.0, 1.0)
+            if not ob.data.users > 1 and select:
                 ob.select_set(True)
 
+            # Shade the object in a color according to the result of the operation.
             highlight_object(ob, select)
 
+        # Change the viewport shading to vertex color.
         set_viewport_shading(context, "SOLID", "VERTEX")
         return {'FINISHED'}
 
@@ -119,18 +127,20 @@ class SUPEREASYANALYTICS_OT_select_flat_shaded(Operator):
         for ob in context.scene.objects:
             ob.select_set(False)
 
-            is_mesh = ob.type == "MESH"
+            # Abort, if the current object is not a mesh.
+            if not ob.type == "MESH":
+                continue
 
-            if is_mesh:
-                shade_flat = False in [
-                    pol.use_smooth for pol in ob.data.polygons]
-
-            if is_mesh and shade_flat:
+            # Check, if the current object is flat shaded and select it, if that's the case.
+            shade_flat = False in [pol.use_smooth for pol in ob.data.polygons]
+            if shade_flat:
                 ob.select_set(True)
                 context.view_layer.objects.active = ob
 
-            highlight_object(ob, is_mesh and shade_flat)
+            # Highlight the object according to whether it's flat shaded or not.
+            highlight_object(ob, shade_flat)
 
+        # Change the viewport shading to vertex color.
         set_viewport_shading(context, "SOLID", "VERTEX")
 
         return {'FINISHED'}
@@ -143,9 +153,11 @@ class SUPEREASYANALYTICS_OT_select_hidden_objects(Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def modal(self, context: Context, event: Event):
+        # Keep the operator running, if the person only navigates.
         if event.type in ["MOUSEMOVE", "INBETWEEN_MOUSEMOVE", "WINDOW_DEACTIVATE", "WHEELDOWNMOUSE", 'WHEELUPMOUSE', 'MIDDLEMOUSE', 'RIGHT_SHIFT', 'LEFT_SHIFT']:
             return {"PASS_THROUGH"}
 
+        # Hide all objects that were hidden previously.
         for ob in self.hidden_objects:
             ob.hide_set(True)
 
@@ -153,17 +165,21 @@ class SUPEREASYANALYTICS_OT_select_hidden_objects(Operator):
 
     def execute(self, context: Context):
         self.hidden_objects = []
+
         for ob in context.scene.objects:
             ob.select_set(False)
 
+            # Check, if the object is hidden, but visible when rendering.
             hidden = not ob.hide_render and ob.hide_get()
             if hidden:
                 ob.hide_set(False)
                 ob.select_set(True)
                 self.hidden_objects.append(ob)
 
+            # Highlight the object based on whether it's hidden or not.
             highlight_object(ob, hidden)
 
+        # Change the viewport shading to vertex color.
         set_viewport_shading(context, "SOLID", "VERTEX")
 
         context.window_manager.modal_handler_add(self)
