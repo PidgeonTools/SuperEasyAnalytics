@@ -223,6 +223,51 @@ class SUPEREASYANALYTICS_OT_highlight_objects_without_material(Operator):
         return {'FINISHED'}
 
 
+class SUPEREASYANALYTICS_OT_highlight_non_manifold(Operator):
+    """Highlight all objects that are non-manifold"""
+    bl_idname = "supereasyanalytics.highlight_non_manifold"
+    bl_label = "Highlight Non-Manifold obljects"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context: Context):
+
+        for ob in context.scene.objects:
+            ob.select_set(False)
+
+            # Abort, if the current object is not a mesh.
+            if not ob.type == "MESH":
+                continue
+
+            # Select the object and switch to Edit Mode.
+            context.view_layer.objects.active = ob
+            bpy.ops.object.mode_set(mode='EDIT')
+            bpy.ops.mesh.select_mode(type="VERT")
+
+            # Select all vertecies, if at least one vertex is selected.
+            if context.active_object.data.total_vert_sel > 0:
+                bpy.ops.mesh.select_all()
+
+            # Make use of the select_non_manifold() function.
+            bpy.ops.mesh.select_non_manifold()
+
+            # Determine, whether the object is non-manifold.
+            non_manifold = False
+            if context.active_object.data.total_vert_sel > 0:
+                non_manifold = True
+
+            # Switch back to object mode.
+            bpy.ops.object.mode_set(mode='OBJECT')
+
+            # Highlight/select the object based on whether it is Non-Manifold or not.
+            ob.select_set(non_manifold)
+            highlight_object(ob, non_manifold)
+
+        # Change the viewport shading to vertex color.
+        set_viewport_shading(context, "SOLID", "VERTEX")
+
+        return {'FINISHED'}
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
@@ -230,7 +275,8 @@ classes = (
     SUPEREASYANALYTICS_OT_highlight_unapplied_scale,
     SUPEREASYANALYTICS_OT_highlight_flat_shaded,
     SUPEREASYANALYTICS_OT_highlight_hidden_objects,
-    SUPEREASYANALYTICS_OT_highlight_objects_without_material
+    SUPEREASYANALYTICS_OT_highlight_objects_without_material,
+    SUPEREASYANALYTICS_OT_highlight_non_manifold
 )
 
 
