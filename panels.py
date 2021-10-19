@@ -31,7 +31,8 @@ from .operators import (
     SUPEREASYANALYTICS_OT_highlight_flat_shaded,
     SUPEREASYANALYTICS_OT_highlight_hidden_objects,
     SUPEREASYANALYTICS_OT_set_project_price,
-    SUPEREASYANALYTICS_OT_save_reminder
+    SUPEREASYANALYTICS_OT_save_reminder,
+    SUPEREASYANALYTICS_OT_highlight_objects_without_material
 )
 
 
@@ -139,6 +140,8 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
         layout.operator(SUPEREASYANALYTICS_OT_highlight_hidden_objects.bl_idname,
                         text="Highlight hidden objects that will be rendered.")  # ,
         # icon="RESTRICT_RENDER_OFF")  # TODO: Add icon or not?
+        layout.operator(
+            SUPEREASYANALYTICS_OT_highlight_objects_without_material.bl_idname)
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):

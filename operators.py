@@ -190,13 +190,47 @@ class SUPEREASYANALYTICS_OT_highlight_hidden_objects(Operator):
         return {'RUNNING_MODAL'}
 
 
+class SUPEREASYANALYTICS_OT_highlight_objects_without_material(Operator):
+    """Highlight all objects that do not have a material assigned to them"""
+    bl_idname = "supereasyanalytics.highlight_objects_without_material"
+    bl_label = "Highlight objects without material"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context: Context):
+        for ob in context.scene.objects:
+            ob.select_set(False)
+
+            # Abort, if the current object is not a mesh.
+            if not ob.type == "MESH":
+                continue
+
+            # Check, if the object has a material assigned to it.
+            has_no_material = True
+            for slot in ob.material_slots:
+                if slot.material != None:
+                    has_no_material = False
+                    break
+
+            if has_no_material:
+                ob.select_set(True)
+
+            # Highlight the object based on whether it has a material or not.
+            highlight_object(ob, has_no_material)
+
+        # Change the viewport shading to vertex color.
+        set_viewport_shading(context, "SOLID", "VERTEX")
+
+        return {'FINISHED'}
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
     SUPEREASYANALYTICS_OT_set_project_price,
     SUPEREASYANALYTICS_OT_highlight_unapplied_scale,
     SUPEREASYANALYTICS_OT_highlight_flat_shaded,
-    SUPEREASYANALYTICS_OT_highlight_hidden_objects
+    SUPEREASYANALYTICS_OT_highlight_hidden_objects,
+    SUPEREASYANALYTICS_OT_highlight_objects_without_material
 )
 
 
