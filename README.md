@@ -3,6 +3,23 @@
 ![GitHub issues](https://img.shields.io/github/issues/BlenderDefender/SuperEasyAnalytics?style=for-the-badge)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/BlenderDefender/SuperEasyAnalytics?style=for-the-badge)
 
+## Upcoming Version:
+
+<!-- CHANGELOG -->
+- Improvement: Accurate mode
+- Feature: Save reminder
+- Feature: Rendering Time per file
+- Feature: Time spent per file
+- Feature: Highlight hidden objects that will be visible when rendering
+- Feature: Highlight objects with unapplied scale
+- Feature: Highlight objects that are not smooth-shaded
+- Feature: Highlight objects that do not have a material assigned to them
+- Feature: Highlight non-manifold meshes
+- Feature: Project Price per hour (For Freelancers)
+- Feature: See how many addons are enabled
+- Feature: How many times was Crtl. + Z pressed?
+<!-- CHANGELOG -->
+
 # Super Easy Analytics
 
 Analyze your Blender behavior. Want to spend more time with Blender and know how long you use Blender every day?
