@@ -1,0 +1,86 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Auto publish release
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  release:
+    # Only run the job, if the commit message contains the release trigger.
+    if: ${{ contains(github.event.head_commit.message, '#RELEASE') }}
+
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repo 🤔
+        uses: actions/checkout@v2
+
+      # Runs a set of commands using the runners shell
+      - name: Prepare Release 🧪
+        id: prepare_release
+        env:
+          include_issue_notice: true
+        run: |
+          message=${{ github.event.head_commit.message }}
+          repo_url=${{ github.repository }}
+          include_issue_notice=${{ env.include_issue_notice }}
+          python ./.github/workflows/get_release_description.py
+
+          
+          echo "::set-output name=RELEASE_TITLE::$(python ./.github/workflows/get_release_title.py --commit_message $message)"
+          echo "::set-output name=VERSION::$(python ./.github/workflows/prepare_release.py --commit_message $message --repo_url $repo_url --include_issue_notice $include_issue_notice)"
+          
+      - name: Update CHANGELOG ⏱
+        uses: stefanzweifel/git-auto-commit-action@v4
+        id: update_changelog
+        with:
+          commit_message: Update CHANGELOG.md
+          
+      - name: Draft Release
+        id: draft_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.prepare_release.outputs.VERSION }}
+          body_path: ../release_description.txt
+          release_name: ${{ steps.prepare_release.outputs.RELEASE_TITLE }}
+          draft: true
+          commitish: master
+          
+      - name: Create Package 📦
+        id: create_package
+        run: |
+          dir=$(basename $(pwd))
+          cd ..
+          zip $dir.zip -r $dir
+          echo "::set-output name=ZIP_DIR::../$dir.zip"
+          echo "::set-output name=ZIP::$dir.zip"
+
+      - name: Upload Package 📦
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+         upload_url: ${{ steps.draft_release.outputs.upload_url }}
+         asset_path: ${{ steps.create_package.outputs.ZIP_DIR }}
+         asset_name: ${{ steps.create_package.outputs.ZIP }}
+         asset_content_type: application/zip
+
+      - name: Publish Release 🥳
+        uses: eregon/publish-release@v1
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+         release_id: ${{ steps.draft_release.outputs.id }}
+
