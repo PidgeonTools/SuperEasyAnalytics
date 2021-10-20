@@ -226,7 +226,7 @@ class SUPEREASYANALYTICS_OT_highlight_objects_without_material(Operator):
 class SUPEREASYANALYTICS_OT_highlight_non_manifold(Operator):
     """Highlight all objects that are non-manifold"""
     bl_idname = "supereasyanalytics.highlight_non_manifold"
-    bl_label = "Highlight Non-Manifold obljects"
+    bl_label = "Highlight Non-Manifold objects"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context: Context):
@@ -268,6 +268,38 @@ class SUPEREASYANALYTICS_OT_highlight_non_manifold(Operator):
         return {'FINISHED'}
 
 
+class SUPEREASYANALYTICS_OT_highlight_ngons(Operator):
+    """Highlight all objects that have N-Gons."""
+    bl_idname = "supereasyanalytics.highlight_ngons"
+    bl_label = "Highlight N-Gon objects"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context: Context):
+
+        for ob in context.scene.objects:
+            ob.select_set(False)
+
+            # Abort, if the current object is not a mesh.
+            if not ob.type == "MESH":
+                continue
+
+            # Determine, whether the object has N-Gons.
+            has_ngons = False
+            for pol in ob.data.polygons:
+                if len(pol.vertices) > 4:
+                    has_ngons = True
+                    ob.select_set(True)
+                    break
+
+            # Highlight/select the object based on whether it has N-Gons or not.
+            highlight_object(ob, has_ngons)
+
+        # Change the viewport shading to vertex color.
+        set_viewport_shading(context, "SOLID", "VERTEX")
+
+        return {'FINISHED'}
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
@@ -276,7 +308,8 @@ classes = (
     SUPEREASYANALYTICS_OT_highlight_flat_shaded,
     SUPEREASYANALYTICS_OT_highlight_hidden_objects,
     SUPEREASYANALYTICS_OT_highlight_objects_without_material,
-    SUPEREASYANALYTICS_OT_highlight_non_manifold
+    SUPEREASYANALYTICS_OT_highlight_non_manifold,
+    SUPEREASYANALYTICS_OT_highlight_ngons
 )
 
 

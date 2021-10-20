@@ -27,6 +27,7 @@ from .functions.register_functions import (
 )
 
 from .operators import (
+    SUPEREASYANALYTICS_OT_highlight_ngons,
     SUPEREASYANALYTICS_OT_highlight_unapplied_scale,
     SUPEREASYANALYTICS_OT_highlight_flat_shaded,
     SUPEREASYANALYTICS_OT_highlight_hidden_objects,
@@ -145,6 +146,8 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
             SUPEREASYANALYTICS_OT_highlight_objects_without_material.bl_idname)
         layout.operator(
             SUPEREASYANALYTICS_OT_highlight_non_manifold.bl_idname)
+        layout.operator(
+            SUPEREASYANALYTICS_OT_highlight_ngons.bl_idname)
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
