@@ -14,6 +14,7 @@
 - Feature: Highlight objects with unapplied scale
 - Feature: Highlight objects that are not smooth-shaded
 - Feature: Highlight objects that do not have a material assigned to them
+- Feature: Highlight meshes with n-gons
 - Feature: Highlight non-manifold meshes
 - Feature: Project Price per hour (For Freelancers)
 - Feature: See how many addons are enabled
