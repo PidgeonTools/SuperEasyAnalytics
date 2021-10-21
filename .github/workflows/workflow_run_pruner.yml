@@ -57,7 +57,9 @@ jobs:
           // because we track the duration of runs over time
 
           const workflows = [
-            'release.yml'
+            'release.yml',
+            'codeql-analysis.yml',
+            'link_check.yml'
           ]
 
           let runs_to_delete = [];
