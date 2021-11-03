@@ -216,6 +216,12 @@ def update_json_and_data120(path: str) -> dict:
         j["dates_hours_alignment"][new_label] = j["dates_hours_alignment"].pop(
             i)
 
+    j["rendering_devices"] = {
+        "CPU": 0,
+        "GPU": 0,
+        "Hybrid": 0
+    }
+
     # Change the format of start_time to be seconds since the epoch.
     j["start_time"] = 1581030000
 

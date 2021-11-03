@@ -2,6 +2,11 @@
     "default_cube": 0,
     "undo_count": 0,
     "start_time": 1581030000,
+    "rendering_devices": {
+        "CPU": 0,
+        "GPU": 0,
+        "Hybrid": 0
+    },
     "date": [
         0,
         0,
