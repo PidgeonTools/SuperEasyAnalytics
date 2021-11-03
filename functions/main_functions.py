@@ -110,6 +110,14 @@ def get_undos(path: str) -> int:
     return 0
 
 
+def get_render_devices(path: str) -> tuple:
+    data = decode_json(path)["rendering_devices"]
+
+    most_used = max(data, key=data.get)
+
+    return (most_used, data[most_used]), tuple(data.items())
+
+
 # Highlight an object using a vertex color.
 def highlight_object(ob: Object, set_highlight_color=False) -> None:
     # Abort, if the given object isn't a mesh.

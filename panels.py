@@ -15,6 +15,7 @@ from os import path as p
 import time
 
 from .functions.main_functions import (
+    get_render_devices,
     get_yesterday,
     get_today,
     get_last_week,
@@ -96,6 +97,8 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
             yesterday = round(get_yesterday(path) / 60, 2)
             last_week = round(get_last_week(path) / 60, 2)
 
+        most_used_device, render_devices = get_render_devices(path)
+
         layout.label(text="Blender Usage:", icon='TIME')
 
         # Blender Usage Display text.
@@ -105,16 +108,27 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
             text=f"Yesterday, you've used Blender for {yesterday} {display_unit}.")
         layout.label(
             text=f"During the last week, you've used Blender for {last_week} {display_unit}.")
-        layout.label(text="")
+        layout.separator()
+
+        # Render Device Count
+        layout.label(
+            text=f"You've rendered most of your files ({most_used_device[1]}) using this device: {most_used_device[0]}")
+        layout.label(text="Rendering statistics sorted by device:")
+
+        for dev, count in render_devices:
+            layout.label(text=f"{dev}: {count}")
+        layout.separator()
+
+        # Undo count.
         layout.label(
             text=f"While using Blender, you've undone {get_undos(path)} steps.")
-        layout.label(text="")
+        layout.separator()
 
         # Default Cubes Display text.
         layout.label(text="Default Cubes:", icon="MESH_CUBE")
         layout.label(
             text=f"You've deleted {get_default_cubes(path)} default cubes so far.")
-        layout.label(text="")
+        layout.separator()
 
         layout.label(text="App Statistics:", icon='BLENDER')
 

@@ -77,6 +77,7 @@ def startup_setup(*args):
 
     # Add the project_time attribute to bpy, because bpy.context is read-only in draw()
     bpy.project_time = context.scene.project_time
+    bpy.counted_render_device = False
     print(bpy.ops.supereasyanalytics.modal())  # Debugging only
 
 
@@ -93,6 +94,38 @@ def set_save_timestamp(*args):
 
 
 @persistent  # Keep the function registered across multiple files.
+def save_rendering_device(*args):
+    if bpy.counted_render_device:
+        return
+
+    context: Context = bpy.context
+    data = decode_json(PATH)
+
+    print(context.scene.render.engine)
+
+    # Assume, that all other rendering engines
+    # (the built-in ones should do) use the GPU for rendering.
+    rendering_device = "GPU"
+
+    if context.scene.render.engine == "CYCLES":
+        cycles_prefs = context.preferences.addons['cycles'].preferences
+
+        if context.scene.cycles.device == "CPU" or cycles_prefs.compute_device_type == "NONE":
+            rendering_device = "CPU"
+        else:
+            used_devices = sum([x["use"] for x in cycles_prefs.devices])
+            if used_devices > 1:
+                rendering_device = "Hybrid"
+
+    data["rendering_devices"][rendering_device] += 1
+
+    encode_json(data, PATH)
+
+    # Set a temporary variable to prevent duplicate counting of render devices.
+    bpy.counted_render_device = True
+
+
+@persistent  # Keep the function registered across multiple files.
 def set_render_timestamp(*args):
     context: Context = bpy.context
     context.scene.render_timestamp = time.time()
@@ -105,6 +138,9 @@ def set_render_time(*args):
     render_timestamp = context.scene.render_timestamp
     context.scene.render_time += time.time() - render_timestamp
 
+    # Reset the variable that prevents multiple counting of rendering devices.
+    bpy.counted_render_device = False
+
 
 def register():
     bpy.app.handlers.load_post.append(startup_setup)
@@ -112,6 +148,7 @@ def register():
     bpy.app.handlers.save_pre.append(save_project_time)
     bpy.app.handlers.save_pre.append(set_save_timestamp)
     bpy.app.handlers.render_init.append(set_render_timestamp)
+    bpy.app.handlers.render_init.append(save_rendering_device)
     bpy.app.handlers.render_complete.append(set_render_time)
     bpy.app.handlers.render_cancel.append(set_render_time)
 
