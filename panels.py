@@ -235,12 +235,19 @@ def save_reminder(self, context):
 
     layout: UILayout = self.layout
 
-    # Determine, whether to remind the user of saving the file.
-    remind = prefs.save_reminder_interval * 60 <= int(
+    # Determine, whether to remind the user of saving the file because of the time interval.
+    remind_time = prefs.save_reminder_interval * 60 <= int(
         time.time()) - context.scene.save_timestamp
 
+    # Determine, whether to show the Save reminder or not.
+    show_reminder = D.is_dirty and remind_time
+
+    if prefs.auto_save and show_reminder:
+        bpy.ops.wm.save_mainfile('INVOKE_DEFAULT')
+        return
+
     # Display the reminder, if the file has unsaved changes and remind is True.
-    if not D.is_saved or (D.is_dirty and remind):
+    if not D.is_saved or show_reminder:
         layout.operator(
             SUPEREASYANALYTICS_OT_save_reminder.bl_idname, icon="ERROR")
 

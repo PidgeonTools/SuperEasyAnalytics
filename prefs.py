@@ -95,6 +95,12 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         default=5.0
     )
 
+    auto_save: BoolProperty(
+        name="Automatically save files",
+        description="Save the current file automatically (instead of showing the save reminder)",
+        default=False
+    )
+
     def draw(self, context: Context):
         layout: UILayout = self.layout
 
@@ -116,6 +122,7 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
 
         # Layout the save reminder interval setting.
         layout.prop(self, "save_reminder_interval")
+        layout.prop(self, "auto_save")
 
         # col = layout.column() # works best if a column, or even just self.layout
         mainrow = layout.row()
