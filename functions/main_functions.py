@@ -159,6 +159,35 @@ def set_viewport_shading(context: Context, type: str, color_type: str) -> None:
     space.shading.color_type = color_type
 
 
+# Get the device type when rendering.
+def get_rendering_device(context: Context) -> str:
+    if context.scene.render.engine == "CYCLES":
+        cycles_prefs = context.preferences.addons['cycles'].preferences
+
+        # Determine, whether the rendering device is a CPU.
+        is_cpu = context.scene.cycles.device == "CPU" or cycles_prefs.compute_device_type == "NONE"
+
+        # Get a list of all enabled GPU and CPU devices.
+        enabled_gpu_devices = list(filter(lambda x: x.use == 1, [
+            dev for dev in cycles_prefs.devices if dev.type != "CPU"]))
+        enabled_cpu_devices = list(filter(
+            lambda x: x.use == 1, cycles_prefs.get_devices_for_type("CPU")))
+
+        # Determine, in which combination GPU and/or CPU are turned on.
+        device_combinations = [
+            len(enabled_gpu_devices) > 0, len(enabled_cpu_devices) > 0]
+
+        if is_cpu or device_combinations == [False, True]:
+            return "CPU"
+
+        if device_combinations == [True, True]:
+            return "Hybrid"
+
+    # Assume, that all other rendering engines
+    # (the built-in ones should do) use the GPU for rendering.
+    return "GPU"
+
+
 # Update the data to version 1.0.1!
 def update_json101(path: str) -> dict:
     # Get the SEA data

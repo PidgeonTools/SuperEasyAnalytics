@@ -30,6 +30,7 @@ from bpy.types import (
     Context,
     Scene
 )
+from .main_functions import get_rendering_device
 
 from .json_functions import (
     decode_json,
@@ -101,23 +102,7 @@ def save_rendering_device(*args):
     context: Context = bpy.context
     data = decode_json(PATH)
 
-    print(context.scene.render.engine)
-
-    # Assume, that all other rendering engines
-    # (the built-in ones should do) use the GPU for rendering.
-    rendering_device = "GPU"
-
-    if context.scene.render.engine == "CYCLES":
-        cycles_prefs = context.preferences.addons['cycles'].preferences
-
-        if context.scene.cycles.device == "CPU" or cycles_prefs.compute_device_type == "NONE":
-            rendering_device = "CPU"
-        else:
-            used_devices = sum([x["use"] for x in cycles_prefs.devices])
-            if used_devices > 1:
-                rendering_device = "Hybrid"
-
-    data["rendering_devices"][rendering_device] += 1
+    data["rendering_devices"][get_rendering_device(context)] += 1
 
     encode_json(data, PATH)
 
