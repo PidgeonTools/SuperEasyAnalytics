@@ -242,7 +242,7 @@ def save_reminder(self, context):
     # Determine, whether to show the Save reminder or not.
     show_reminder = D.is_dirty and remind_time
 
-    if prefs.auto_save and show_reminder:
+    if prefs.auto_save and show_reminder and D.is_saved:
         bpy.ops.wm.save_mainfile('INVOKE_DEFAULT')
         return
 
