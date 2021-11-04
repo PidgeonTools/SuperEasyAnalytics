@@ -32,10 +32,12 @@ from .operators import (
     SUPEREASYANALYTICS_OT_highlight_unapplied_scale,
     SUPEREASYANALYTICS_OT_highlight_flat_shaded,
     SUPEREASYANALYTICS_OT_highlight_hidden_objects,
+    SUPEREASYANALYTICS_OT_linked_duplicates_list,
     SUPEREASYANALYTICS_OT_set_project_price,
     SUPEREASYANALYTICS_OT_save_reminder,
     SUPEREASYANALYTICS_OT_highlight_objects_without_material,
-    SUPEREASYANALYTICS_OT_highlight_non_manifold
+    SUPEREASYANALYTICS_OT_highlight_non_manifold,
+    SUPEREASYANALYTICS_OT_unlink_duplicates
 )
 
 
@@ -162,6 +164,25 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
             SUPEREASYANALYTICS_OT_highlight_non_manifold.bl_idname)
         layout.operator(
             SUPEREASYANALYTICS_OT_highlight_ngons.bl_idname)
+        layout.operator(SUPEREASYANALYTICS_OT_linked_duplicates_list.bl_idname)
+
+        # Layout the list of linked duplicates, when checked.
+        if hasattr(bpy, "linked_duplicates") and len(bpy.linked_duplicates) > 0:
+            box = layout.box()
+            box.label(text="List of linked duplicates:")
+
+            for index, el in enumerate(bpy.linked_duplicates):
+                row = box.row()
+                row.label(text=f"{el.name}: {el.users} Objects")
+
+                op = row.operator(
+                    SUPEREASYANALYTICS_OT_unlink_duplicates.bl_idname, text="", icon="UNLINKED")
+                op.index = index
+
+                op = row.operator(
+                    SUPEREASYANALYTICS_OT_unlink_duplicates.bl_idname, text="", icon="DECORATE_LIBRARY_OVERRIDE")
+                op.index = index
+                op.apply_scale = True
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):

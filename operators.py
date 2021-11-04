@@ -1,6 +1,8 @@
 import bpy
 from bpy.props import (
+    BoolProperty,
     FloatProperty,
+    IntProperty,
 )
 from bpy.types import (
     Context,
@@ -300,6 +302,59 @@ class SUPEREASYANALYTICS_OT_highlight_ngons(Operator):
         return {'FINISHED'}
 
 
+class SUPEREASYANALYTICS_OT_linked_duplicates_list(Operator):
+    """List all linked duplicates."""
+    bl_idname = "supereasyanalytics.linked_duplicates_list"
+    bl_label = "List linked duplicates"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context: Context):
+        D = bpy.data
+
+        bpy.linked_duplicates = []
+
+        for mesh in D.meshes:
+            if mesh.users > 1:
+                bpy.linked_duplicates.append(mesh)
+
+        return {'FINISHED'}
+
+
+class SUPEREASYANALYTICS_OT_unlink_duplicates(Operator):
+    """Unlink a group of linked duplikates."""
+    bl_idname = "supereasyanalytics.unlink_duplicates"
+    bl_label = "Unlink Duplicates"
+    bl_options = {'UNDO'}
+
+    index: IntProperty(
+        name="List index"
+    )
+
+    apply_scale: BoolProperty(
+        name="Apply scale",
+        default=False
+    )
+
+    def execute(self, context: Context):
+        name = bpy.linked_duplicates[self.index].name
+
+        for ob in bpy.data.objects:
+            ob.select_set(False)
+            if ob.data.name == name:
+                ob.select_set(True)
+
+        bpy.ops.object.make_single_user(
+            object=True, obdata=True, material=False, animation=True)
+
+        if self.apply_scale:
+            bpy.ops.object.transform_apply(
+                location=False, rotation=False, scale=True)
+
+        bpy.linked_duplicates.pop(self.index)
+
+        return {'FINISHED'}
+
+
 classes = (
     SUPEREASYANALYTICS_OT_modal,
     SUPEREASYANALYTICS_OT_save_reminder,
@@ -309,7 +364,9 @@ classes = (
     SUPEREASYANALYTICS_OT_highlight_hidden_objects,
     SUPEREASYANALYTICS_OT_highlight_objects_without_material,
     SUPEREASYANALYTICS_OT_highlight_non_manifold,
-    SUPEREASYANALYTICS_OT_highlight_ngons
+    SUPEREASYANALYTICS_OT_highlight_ngons,
+    SUPEREASYANALYTICS_OT_linked_duplicates_list,
+    SUPEREASYANALYTICS_OT_unlink_duplicates
 )
 
 

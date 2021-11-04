@@ -79,6 +79,7 @@ def startup_setup(*args):
     # Add the project_time attribute to bpy, because bpy.context is read-only in draw()
     bpy.project_time = context.scene.project_time
     bpy.counted_render_device = False
+    bpy.linked_duplicates = []
     print(bpy.ops.supereasyanalytics.modal())  # Debugging only
 
 
