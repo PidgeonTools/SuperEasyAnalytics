@@ -101,6 +101,13 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         default=False
     )
 
+    system_memory: IntProperty(
+        name="System RAM",
+        description="The amount of RAM that you have available in your system.",
+        default=8192,
+        step=1024
+    )
+
     def draw(self, context: Context):
         layout: UILayout = self.layout
 
@@ -108,6 +115,9 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         username = p.basename(p.expanduser("~"))
         layout.label(
             text=f"Hello {username}, here are your Addon Preferences:")
+
+        # System RAM
+        layout.prop(self, "system_memory")
 
         # Layout the setting for turning the freelancer stats on / off.
         layout.prop(self, "freelancer_stats")

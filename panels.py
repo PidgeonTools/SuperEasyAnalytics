@@ -101,6 +101,12 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
 
         most_used_device, render_devices = get_render_devices(path)
 
+        memory_stats = context.scene.statistics(
+            context.view_layer).split(" | ")[-2].split(" ")
+        memory_usage = float(memory_stats[1])
+        if memory_stats[-1] == "GiB":
+            memory_usage *= 1024
+
         layout.label(text="Blender Usage:", icon='TIME')
 
         # Blender Usage Display text.
@@ -133,6 +139,10 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
         layout.separator()
 
         layout.label(text="App Statistics:", icon='BLENDER')
+
+        # Memory usage.
+        layout.label(
+            text=f"You are using {(memory_usage/prefs.system_memory) * 100}% of your RAM for Blender.")
 
         # Blender App Stats.
         layout.label(
