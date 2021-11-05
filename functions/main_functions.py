@@ -20,6 +20,7 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+from posixpath import split
 import bpy
 from bpy.types import (
     Context,
@@ -110,12 +111,41 @@ def get_undos(path: str) -> int:
     return 0
 
 
+# Get, which render device was used how often.
 def get_render_devices(path: str) -> tuple:
     data = decode_json(path)["rendering_devices"]
 
     most_used = max(data, key=data.get)
 
     return (most_used, data[most_used]), tuple(data.items())
+
+
+# Get the Blender File Data.
+def get_file_data() -> list:
+    data = []
+
+    # List of attributes to exclude from bpy.data
+    blacklist = ["__doc__", "__module__", "__slots__", "batch_remove", "bl_rna", "is_dirty", "is_saved",
+                 "rna_type", "use_autopack", "user_map", "version", "filepath", "orphans_purge", "temp_data"]
+
+    # Go over all attributes of bpy.data
+    for i in dir(bpy.data):
+        if i in blacklist:
+            continue
+
+        # Get the attribute data.
+        attribute = getattr(bpy.data, i)
+
+        # Prevent errors when trying to convert to a list.
+        if attribute == None:
+            continue
+
+        # Add the name and count to the data list, if the attribute contains data.
+        if len(list(attribute)) > 0:
+            pretty_name = " ".join([w.capitalize() for w in i.split("_")])
+            data.append((pretty_name, len(list(attribute))))
+
+    return data
 
 
 # Highlight an object using a vertex color.

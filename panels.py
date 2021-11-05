@@ -20,7 +20,8 @@ from .functions.main_functions import (
     get_today,
     get_last_week,
     get_default_cubes,
-    get_undos
+    get_undos,
+    get_file_data
 )
 
 from .functions.register_functions import (
@@ -142,7 +143,7 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
 
         # Memory usage.
         layout.label(
-            text=f"You are using {(memory_usage/prefs.system_memory) * 100}% of your RAM for Blender.")
+            text=f"You are using {int((memory_usage/prefs.system_memory) * 100)}% of your RAM for Blender.")
 
         # Blender App Stats.
         layout.label(
@@ -193,6 +194,26 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
                     SUPEREASYANALYTICS_OT_unlink_duplicates.bl_idname, text="", icon="DECORATE_LIBRARY_OVERRIDE")
                 op.index = index
                 op.apply_scale = True
+
+
+class SUPEREASYANALYTICS_PT_file_data(Panel):
+    """Ranking of the data that is included in the current file."""
+    bl_label = "File data"
+    bl_idname = "SUPEREASYANALYTICS_PT_file_data"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+
+    bl_parent_id = "SUPEREASYANALYTICS_PT_scene_analytics"
+
+    def draw(self, context: Context):
+        layout = self.layout
+
+        # File data analytics.
+        file_data = get_file_data()
+        file_data.sort(key=lambda x: x[1], reverse=True)
+
+        for name, number in file_data:
+            layout.label(text=f"{name}: {number}")
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
@@ -287,6 +308,7 @@ classes = (
     SUPEREASYANALYTICS_PT_main,
     SUPEREASYANALYTICS_PT_usage_stats,
     SUPEREASYANALYTICS_PT_scene_analytics,
+    SUPEREASYANALYTICS_PT_file_data,
     SUPEREASYANALYTICS_PT_freelancer_stats,
     SUPEREASYANALYTICS_PT_project_stats
 )
