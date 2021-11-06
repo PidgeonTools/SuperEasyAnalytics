@@ -266,8 +266,8 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
         # Manipulate the time based on the display settings.
         if prefs.display_unit:
             display_unit = "minutes"
-            project_time = abs(round(bpy.project_time / 60, 2))
-            render_time = abs(round(context.scene.render_time / 60, 2))
+            project_time = abs(round(bpy.project_time / 60))
+            render_time = abs(round(context.scene.render_time / 60))
         else:
             display_unit = "hours"
             project_time = abs(round(bpy.project_time / (60 * 60), 2))
