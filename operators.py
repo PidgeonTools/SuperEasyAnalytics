@@ -237,7 +237,7 @@ class SUPEREASYANALYTICS_OT_highlight_non_manifold(Operator):
             ob.select_set(False)
 
             # Abort, if the current object is not a mesh.
-            if not ob.type == "MESH":
+            if not ob.type == "MESH" or ob.hide_get():
                 continue
 
             # Select the object and switch to Edit Mode.
