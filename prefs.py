@@ -116,13 +116,8 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         layout.label(
             text=f"Hello {username}, here are your Addon Preferences:")
 
-        # System RAM
-        layout.prop(self, "system_memory")
-
-        # Layout the setting for turning the freelancer stats on / off.
-        layout.prop(self, "freelancer_stats")
-
         # Layout the setting for the display unit.
+        layout.label(text="Display unit:")
         if self.display_unit:
             layout.prop(self, "display_unit", toggle=True,
                         text="Active Display Unit: Minutes")
@@ -131,8 +126,21 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
                         text="Active Display Unit: Hours")
 
         # Layout the save reminder interval setting.
+        layout.separator(factor=0.5)
+        layout.label(text="Save Reminder:")
         layout.prop(self, "save_reminder_interval")
         layout.prop(self, "auto_save")
+
+        # System RAM
+        layout.separator(factor=0.5)
+        layout.label(text="System preferences:")
+        layout.prop(self, "system_memory")
+
+        # Layout the setting for turning the freelancer stats on / off.
+        layout.separator(factor=0.5)
+        layout.label(text="Optional Statistics:")
+        layout.prop(self, "freelancer_stats",
+                    text="Enable Freelancer Statistics")
 
         # col = layout.column() # works best if a column, or even just self.layout
         mainrow = layout.row()
