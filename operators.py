@@ -95,7 +95,7 @@ class SUPEREASYANALYTICS_OT_set_project_price(Operator):
 
 
 class SUPEREASYANALYTICS_OT_highlight_unapplied_scale(Operator):
-    """Select all objects with unapplied scale. Linked duplicates are highlighted with a color, but not selected, because scale can't be applied on linked duplicates"""
+    """Highlight all objects with unapplied scale. Linked duplicates are highlighted with a color, but not selected, because scale can't be applied on linked duplicates"""
     bl_idname = "supereasyanalytics.highlight_unapplied_scale"
     bl_label = "Highlight objects with unapplied scale"
     bl_options = {'UNDO'}

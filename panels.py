@@ -162,20 +162,14 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
     def draw(self, context: Context):
         layout: UILayout = self.layout
 
-        layout.operator(SUPEREASYANALYTICS_OT_highlight_unapplied_scale.bl_idname,
-                        text="Highlight unapplied scale")
-        layout.operator(SUPEREASYANALYTICS_OT_highlight_flat_shaded.bl_idname,
-                        text="Highlight flat shaded objects")
-        layout.operator(SUPEREASYANALYTICS_OT_highlight_hidden_objects.bl_idname,
-                        text="Highlight hidden objects that will be rendered.")  # ,
-        # icon="RESTRICT_RENDER_OFF")  # TODO: Add icon or not?
+        # Highlight operators
+        self.draw_highlight_ops(context, layout)
+
+        layout.separator(factor=0)
+
+        # Linked duplicates list.
         layout.operator(
-            SUPEREASYANALYTICS_OT_highlight_objects_without_material.bl_idname)
-        layout.operator(
-            SUPEREASYANALYTICS_OT_highlight_non_manifold.bl_idname)
-        layout.operator(
-            SUPEREASYANALYTICS_OT_highlight_ngons.bl_idname)
-        layout.operator(SUPEREASYANALYTICS_OT_linked_duplicates_list.bl_idname)
+            SUPEREASYANALYTICS_OT_linked_duplicates_list.bl_idname)
 
         # Layout the list of linked duplicates, when checked.
         if hasattr(bpy, "linked_duplicates") and len(bpy.linked_duplicates) > 0:
@@ -195,6 +189,41 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
                 op.index = index
                 op.apply_scale = True
 
+    def draw_highlight_ops(self, context: Context, layout: UILayout):
+        row = layout.row()
+        row.alignment = "CENTER"
+        row.label(text="Highlight objects by:")
+
+        highlight_operators = layout.grid_flow(
+            align=True, row_major=True, columns=2)
+
+        # Unapplied scale.
+        highlight_operators.operator(
+            SUPEREASYANALYTICS_OT_highlight_unapplied_scale.bl_idname,
+            text="Unapplied scale")
+
+        # Flat shaded objects.
+        highlight_operators.operator(
+            SUPEREASYANALYTICS_OT_highlight_flat_shaded.bl_idname,
+            text="Flat shaded objects")
+
+        # Hidden objects.
+        highlight_operators.operator(
+            SUPEREASYANALYTICS_OT_highlight_hidden_objects.bl_idname,
+            text="Hidden objects")
+
+        # Non-Material.
+        highlight_operators.operator(
+            SUPEREASYANALYTICS_OT_highlight_objects_without_material.bl_idname, text="Non-Material objects")
+
+        # Non-Manifold.
+        highlight_operators.operator(
+            SUPEREASYANALYTICS_OT_highlight_non_manifold.bl_idname, text="Non-Manifold objects")
+
+        # N-Gon objects.
+        highlight_operators.operator(
+            SUPEREASYANALYTICS_OT_highlight_ngons.bl_idname, text="N-Gon objects")
+
 
 class SUPEREASYANALYTICS_PT_file_data(Panel):
     """Ranking of the data that is included in the current file."""
@@ -212,8 +241,11 @@ class SUPEREASYANALYTICS_PT_file_data(Panel):
         file_data = get_file_data()
         file_data.sort(key=lambda x: x[1], reverse=True)
 
+        flow = layout.grid_flow(row_major=True)
+        flow.alignment = "CENTER"
+
         for name, number in file_data:
-            layout.label(text=f"{name}: {number}")
+            flow.label(text=f"{name}: {number}")
 
 
 class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
