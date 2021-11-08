@@ -1,12 +1,12 @@
-[![Donate](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FBlenderDefender%2FBlenderDefender%2Fshields_endpoint%2FSUPEREASYANALYTICS.json)](https://www.paypal.com/donate?hosted_button_id=TPH9D4NXRDP9Y)
+[![Donate](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FBlenderDefender%2FBlenderDefender%2Fshields_endpoint%2FSUPEREASYANALYTICS.json)](https://blendermarket.com/products/blender-analytics)
 ![GitHub](https://img.shields.io/github/license/BlenderDefender/SuperEasyAnalytics?color=green&style=for-the-badge)
 ![GitHub issues](https://img.shields.io/github/issues/BlenderDefender/SuperEasyAnalytics?style=for-the-badge)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/BlenderDefender/SuperEasyAnalytics?style=for-the-badge)
 
 ## Upcoming Version:
 
-
 We've just hit another update. No features are planned so far. [Change this!](https://github.com/BlenderDefender/SuperEasyAnalytics/issues/new/choose)
+
 <!-- CHANGELOG -->
 
 <!-- CHANGELOG -->
