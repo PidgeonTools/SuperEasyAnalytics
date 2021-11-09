@@ -264,13 +264,13 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
     def draw(self, context: Context):
         layout: UILayout = self.layout
 
-        price_per_hour = round(
-            (context.scene.project_price / (bpy.project_time + 1)) * 60 * 60, 2)
+        # Round the project time to full hours, to avoid
+        # displaying unrealistically high numbers.
+        work_time = round(bpy.project_time / (60 * 60))
+        if work_time == 0:
+            work_time = 1
 
-        # Limit the price per hour display to start after 10 minutes
-        # (the price per hour values are way too high after just a few seconds)
-        if price_per_hour > context.scene.project_price * 6:
-            price_per_hour = context.scene.project_price * 6
+        price_per_hour = round(context.scene.project_price / work_time, 2)
 
         # Give the option to set the project price, if it is not set.
         if context.scene.project_price == 0:
