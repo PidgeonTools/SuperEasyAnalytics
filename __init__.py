@@ -46,7 +46,7 @@ from .functions.register_functions import (
 bl_info = {
     "name": "Super Easy Analytics (SEA)",
     "author": "Blender Defender",
-    "version": (1, 2, 0),
+    "version": (1, 2, 1),
     "blender": (2, 83, 0),
     "location": "Sidebar (N) > View > Super Easy Analytics",
     "description": "Analyze your Blender behavior!",
