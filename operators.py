@@ -188,6 +188,9 @@ class SUPEREASYANALYTICS_OT_highlight_hidden_objects(Operator):
         # Change the viewport shading to vertex color.
         set_viewport_shading(context, "SOLID", "VERTEX")
 
+        if len(self.hidden_objects) == 0:
+            return {'FINISHED'}
+
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
 
