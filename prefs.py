@@ -162,10 +162,9 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         # col.operator("wm.url_open","Open webpage ").url=addon_updater_ops.updater.website
 
         # Layout the discord URL.
-        layout.separator()
         col = layout.column()
         op = col.operator("wm.url_open", text="Support", icon="URL")
-        op.url = "https://discord.gg/grvMQuh6ru"
+        op.url = "https://bit.ly/discord-sea"
 
 
 classes = (
