@@ -1,3 +1,11 @@
+## Version 1.2.1
+
+- Fix: Fix broken Discord links.
+- Improvement: Freelancer statistics rounds to full hours for more realistic values.
+- Improvement: Ensure that compression is turned off when auto-saving the file.
+- Improvement: Only start the modal operation of SUPEREASYANALYTICS_OT_highlight_hidden_objects, if there are hidden objects in the scene to avoid confusion.
+
+
 ## Version 1.2.0
 
 - Improvement: Accurate mode
@@ -18,6 +26,7 @@
 - Feature: How many times was Crtl. + Z pressed?
 - Feature: See how much of your memory Blender uses.
 - Feature: Break down, what data the file is made of.
+
 
 
 

@@ -5,11 +5,10 @@
 
 ## Upcoming Version:
 
+
+We've just hit another update. No features are planned so far. [Change this!](https://github.com/BlenderDefender/SuperEasyAnalytics/issues/new/choose)
 <!-- CHANGELOG -->
-- Fix: Fix broken Discord links.
-- Improvement: Freelancer statistics rounds to full hours for more realistic values.
-- Improvement: Ensure that compression is turned off when auto-saving the file.
-- Improvement: Only start the modal operation of SUPEREASYANALYTICS_OT_highlight_hidden_objects, if there are hidden objects in the scene to avoid confusion.
+
 <!-- CHANGELOG -->
 
 # Super Easy Analytics
