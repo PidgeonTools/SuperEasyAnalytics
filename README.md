@@ -5,23 +5,30 @@
 
 ## Upcoming Version:
 
-We've just hit another update. No features are planned so far. [Change this!](https://github.com/BlenderDefender/SuperEasyAnalytics/issues/new/choose)
-
 <!-- CHANGELOG -->
-
+- Fix: Fix broken Discord links.
+- Improvement: Freelancer statistics rounds to full hours for more realistic values.
+- Improvement: Ensure that compression is turned off when auto-saving the file.
+- Improvement: Only start the modal operation of SUPEREASYANALYTICS_OT_highlight_hidden_objects, if there are hidden objects in the scene to avoid confusion.
 <!-- CHANGELOG -->
 
 # Super Easy Analytics
 
 Analyze your Blender behavior. Want to spend more time with Blender and know how long you use Blender every day?
 With Super Easy Analytics, you can see how long you use Blender in real-time. Motivate yourself to reach your goals.
-Use SBA.
+Use SEA.
 
 Bonus Feature: Default Cube Cemetery
 If you've been part of the Blender community for a while, you know the unwritten rule that you always delete your default cube
 and then add a new one. There are hundreds of memes on YouTube and Instagram about this. That's why it was urgent
 to make an addon that counts how many default cubes you have deleted.
 
-More features:
-Any feature missing? Help me optimize my addons. Go to https://github.com/BlenderDefender/SuperEasyAnalytics/issues/new?template=feature_request.md
-to make a suggestion. I will look at it as soon as possible and add it if possible.
+But wait, there's more:
+- Highlight tools to inspect your scene.
+- Per file analytics.
+- Freelancer Statistics.
+- Rendering Statistics.
+- File data breakdown.
+- ...
+
+[Do you have questions about this addon? Join the Discord!](https://bit.ly/discord-sea)
