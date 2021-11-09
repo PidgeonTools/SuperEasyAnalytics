@@ -327,7 +327,7 @@ def save_reminder(self, context):
     show_reminder = D.is_dirty and remind_time
 
     if prefs.auto_save and show_reminder and D.is_saved:
-        bpy.ops.wm.save_mainfile('INVOKE_DEFAULT')
+        bpy.ops.wm.save_mainfile('INVOKE_DEFAULT', compress=False)
         return
 
     # Display the reminder, if the file has unsaved changes and remind is True.
