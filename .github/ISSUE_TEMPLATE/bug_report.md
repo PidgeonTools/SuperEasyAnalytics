@@ -26,6 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
  - Blender Version: [e.g. 3.0]
+ - Addon Version: [e.g. 1.2]
 
 
 **Additional context**
