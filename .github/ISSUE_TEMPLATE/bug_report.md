@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
- - Blender Version [e.g. 2.82]
+ - Blender Version: [e.g. 3.0]
 
 
 **Additional context**
