@@ -51,9 +51,9 @@ bl_info = {
     "location": "Sidebar (N) > View > Super Easy Analytics",
     "description": "Analyze your Blender behavior!",
     "warning": "Checkout Gumroad for other Addons and more...",
-    "doc_url": "https://github.com/BlenderDefender/SuperEasyAnalytics/wiki",
-    "tracker_url": "https://github.com/BlenderDefender/SuperEasyAnalytics/issues",
-    "endpoint_url": "https://raw.githubusercontent.com/BlenderDefender/BlenderDefender/updater_endpoints/SUPEREASYANALYTICS.json",
+    "doc_url": "https://github.com/PidgeonTools/SuperEasyAnalytics/wiki",
+    "tracker_url": "https://github.com/PidgeonTools/SuperEasyAnalytics/issues",
+    "endpoint_url": "https://raw.githubusercontent.com/PidgeonTools/SAM-Endpoints/main/SuperEasyAnalytics.json",
     "category": "Analytics"
 }
 

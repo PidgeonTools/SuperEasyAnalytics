@@ -164,7 +164,7 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         # Layout the discord URL.
         col = layout.column()
         op = col.operator("wm.url_open", text="Support", icon="URL")
-        op.url = "https://bit.ly/discord-sea"
+        op.url = "https://bd-links.netlify.app/discord-sea"
 
 
 classes = (
