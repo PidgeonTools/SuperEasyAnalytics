@@ -28,6 +28,7 @@ from .functions.register_functions import (
     date_unregister
 )
 
+from .prefs import SUPEREASYANALYTICS_APT_Preferences as AddonPreferences
 from .operators import (
     SUPEREASYANALYTICS_OT_highlight_ngons,
     SUPEREASYANALYTICS_OT_highlight_unapplied_scale,
@@ -77,8 +78,8 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
     bl_region_type = 'UI'
     bl_parent_id = "SUPEREASYANALYTICS_PT_main"
 
-    def draw(self, context: Context):
-        prefs = context.preferences.addons[__package__].preferences
+    def draw(self, context: 'Context'):
+        prefs: 'AddonPreferences' = context.preferences.addons[__package__].preferences
 
         # Path to the Super Easy Analytics Data.
         path = p.join(p.expanduser("~"),
@@ -86,7 +87,7 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
                       "blender-analytics",
                       "data.json")
 
-        layout: UILayout = self.layout
+        layout: 'UILayout' = self.layout
 
         # Manipulate the time based on the display settings.
         if prefs.display_unit:
@@ -290,10 +291,10 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
     bl_region_type = 'UI'
     bl_parent_id = "SUPEREASYANALYTICS_PT_main"
 
-    def draw(self, context: Context):
-        prefs = context.preferences.addons[__package__].preferences
+    def draw(self, context: 'Context'):
+        prefs: 'AddonPreferences' = context.preferences.addons[__package__].preferences
 
-        layout: UILayout = self.layout
+        layout: 'UILayout' = self.layout
 
         # Manipulate the time based on the display settings.
         if prefs.display_unit:
@@ -312,12 +313,12 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
             text=f"You have spent {render_time} {display_unit} for rendering this file.")
 
 
-def save_reminder(self, context):
+def save_reminder(self, context: 'Context'):
     D = bpy.data
 
-    prefs = context.preferences.addons[__package__].preferences
+    prefs: 'AddonPreferences' = context.preferences.addons[__package__].preferences
 
-    layout: UILayout = self.layout
+    layout: 'UILayout' = self.layout
 
     # Determine, whether to remind the user of saving the file because of the time interval.
     remind_time = prefs.save_reminder_interval * 60 <= int(
