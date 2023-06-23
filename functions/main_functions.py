@@ -105,10 +105,7 @@ def get_default_cubes(path: str) -> int:
 def get_undos(path: str) -> int:
     data = decode_json(path)
 
-    if "undo_count" in data.keys():
-        return data["undo_count"]
-
-    return 0
+    return data.get("undo_count", 0)
 
 
 # Get, which render device was used how often.
@@ -151,7 +148,7 @@ def get_file_data() -> list:
 # Highlight an object using a vertex color.
 def highlight_object(ob: Object, set_highlight_color=False) -> None:
     # Abort, if the given object isn't a mesh.
-    if not ob.type == "MESH":
+    if ob.type != "MESH":
         return
 
     # Get the SEA Highlight Vertex Color or create it, if it doesn't exist.
@@ -165,19 +162,20 @@ def highlight_object(ob: Object, set_highlight_color=False) -> None:
     vertex_color.active = True
 
     # Set the color, that the object should have.
+    color = (1, 1, 1, 1) # Transparent white
     if set_highlight_color:
-        color = (0, 1, 0, 0)
-    else:
-        color = (1, 1, 1, 1)
+        color = (0, 1, 0, 0) # Green
 
     # Check, if the vertex color needs to be changed.
     set_color = tuple(
         vertex_color.data[0].color) != color if vertex_color.data else False
 
     # Change the vertex color, if necessary.
-    if set_color:
-        for data in vertex_color.data:
-            data.color = color
+    if not set_color:
+        return
+
+    for data in vertex_color.data:
+        data.color = color
 
 
 # Set the viewport shading to vertex color for the highlighting.
@@ -191,30 +189,32 @@ def set_viewport_shading(context: Context, type: str, color_type: str) -> None:
 
 # Get the device type when rendering.
 def get_rendering_device(context: Context) -> str:
-    if context.scene.render.engine == "CYCLES":
-        cycles_prefs = context.preferences.addons['cycles'].preferences
-
-        # Determine, whether the rendering device is a CPU.
-        is_cpu = context.scene.cycles.device == "CPU" or cycles_prefs.compute_device_type == "NONE"
-
-        # Get a list of all enabled GPU and CPU devices.
-        enabled_gpu_devices = list(filter(lambda x: x.use == 1, [
-            dev for dev in cycles_prefs.devices if dev.type != "CPU"]))
-        enabled_cpu_devices = list(filter(
-            lambda x: x.use == 1, cycles_prefs.get_devices_for_type("CPU")))
-
-        # Determine, in which combination GPU and/or CPU are turned on.
-        device_combinations = [
-            len(enabled_gpu_devices) > 0, len(enabled_cpu_devices) > 0]
-
-        if is_cpu or device_combinations == [False, True]:
-            return "CPU"
-
-        if device_combinations == [True, True]:
-            return "Hybrid"
-
     # Assume, that all other rendering engines
     # (the built-in ones should do) use the GPU for rendering.
+    if context.scene.render.engine != "CYCLES":
+        return "GPU"
+
+    cycles_prefs = context.preferences.addons['cycles'].preferences
+
+    # Determine, whether the rendering device is a CPU.
+    is_cpu = context.scene.cycles.device == "CPU" or cycles_prefs.compute_device_type == "NONE"
+
+    # Get a list of all enabled GPU and CPU devices.
+    enabled_gpu_devices = list(filter(lambda x: x.use == 1, [
+        dev for dev in cycles_prefs.devices if dev.type != "CPU"]))
+    enabled_cpu_devices = list(filter(
+        lambda x: x.use == 1, cycles_prefs.get_devices_for_type("CPU")))
+
+    # Determine, in which combination GPU and/or CPU are turned on.
+    device_combinations = [
+        len(enabled_gpu_devices) > 0, len(enabled_cpu_devices) > 0]
+
+    if is_cpu or device_combinations == [False, True]:
+        return "CPU"
+
+    if device_combinations == [True, True]:
+        return "Hybrid"
+
     return "GPU"
 
 

@@ -90,16 +90,16 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
         layout: 'UILayout' = self.layout
 
         # Manipulate the time based on the display settings.
-        if prefs.display_unit:
-            display_unit = "minutes"
-            today = get_today(path)
-            yesterday = get_yesterday(path)
-            last_week = get_last_week(path)
-        else:
+        display_unit = "minutes"
+        today = get_today(path)
+        yesterday = get_yesterday(path)
+        last_week = get_last_week(path)
+
+        if not prefs.display_unit:
             display_unit = "hours"
-            today = round(get_today(path) / 60, 2)
-            yesterday = round(get_yesterday(path) / 60, 2)
-            last_week = round(get_last_week(path) / 60, 2)
+            today = round(today / 60, 2)
+            yesterday = round(yesterday / 60, 2)
+            last_week = round(last_week / 60, 2)
 
         most_used_device, render_devices = get_render_devices(path)
 
@@ -172,23 +172,25 @@ class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
         layout.operator(
             SUPEREASYANALYTICS_OT_linked_duplicates_list.bl_idname)
 
+        if not hasattr(bpy, "linked_duplicates") or len(bpy.linked_duplicates) <= 0:
+            return
+
         # Layout the list of linked duplicates, when checked.
-        if hasattr(bpy, "linked_duplicates") and len(bpy.linked_duplicates) > 0:
-            box = layout.box()
-            box.label(text="List of linked duplicates:")
+        box = layout.box()
+        box.label(text="List of linked duplicates:")
 
-            for index, el in enumerate(bpy.linked_duplicates):
-                row = box.row()
-                row.label(text=f"{el.name}: {el.users} Objects")
+        for index, el in enumerate(bpy.linked_duplicates):
+            row = box.row()
+            row.label(text=f"{el.name}: {el.users} Objects")
 
-                op = row.operator(
-                    SUPEREASYANALYTICS_OT_unlink_duplicates.bl_idname, text="", icon="UNLINKED")
-                op.index = index
+            op = row.operator(
+                SUPEREASYANALYTICS_OT_unlink_duplicates.bl_idname, text="", icon="UNLINKED")
+            op.index = index
 
-                op = row.operator(
-                    SUPEREASYANALYTICS_OT_unlink_duplicates.bl_idname, text="", icon="DECORATE_LIBRARY_OVERRIDE")
-                op.index = index
-                op.apply_scale = True
+            op = row.operator(
+                SUPEREASYANALYTICS_OT_unlink_duplicates.bl_idname, text="", icon="DECORATE_LIBRARY_OVERRIDE")
+            op.index = index
+            op.apply_scale = True
 
     def draw_highlight_ops(self, context: Context, layout: UILayout):
         row = layout.row()
@@ -267,6 +269,7 @@ class SUPEREASYANALYTICS_PT_freelancer_stats(Panel):
 
         # Round the project time to full hours, to avoid
         # displaying unrealistically high numbers.
+        # ! TODO: Improve
         work_time = round(bpy.project_time / (60 * 60))
         if work_time == 0:
             work_time = 1
@@ -297,11 +300,11 @@ class SUPEREASYANALYTICS_PT_project_stats(Panel):
         layout: 'UILayout' = self.layout
 
         # Manipulate the time based on the display settings.
-        if prefs.display_unit:
-            display_unit = "minutes"
-            project_time = abs(round(bpy.project_time / 60))
-            render_time = abs(round(context.scene.render_time / 60))
-        else:
+        display_unit = "minutes"
+        project_time = abs(round(bpy.project_time / 60))
+        render_time = abs(round(context.scene.render_time / 60))
+
+        if not prefs.display_unit:
             display_unit = "hours"
             project_time = abs(round(bpy.project_time / (60 * 60), 2))
             render_time = abs(round(context.scene.render_time / (60 * 60), 2))

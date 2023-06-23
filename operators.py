@@ -106,7 +106,7 @@ class SUPEREASYANALYTICS_OT_highlight_unapplied_scale(Operator):
             ob_scale = (ob.scale.x, ob.scale.y, ob.scale.z)
 
             # Abort, if the current object is not a mesh.
-            if not ob.type == "MESH":
+            if ob.type != "MESH":
                 continue
 
             # Check, if the object has unapplied scale
@@ -134,7 +134,7 @@ class SUPEREASYANALYTICS_OT_highlight_flat_shaded(Operator):
             ob.select_set(False)
 
             # Abort, if the current object is not a mesh.
-            if not ob.type == "MESH":
+            if ob.type != "MESH":
                 continue
 
             # Check, if the current object is flat shaded and select it, if that's the case.
@@ -206,7 +206,7 @@ class SUPEREASYANALYTICS_OT_highlight_objects_without_material(Operator):
             ob.select_set(False)
 
             # Abort, if the current object is not a mesh.
-            if not ob.type == "MESH":
+            if ob.type != "MESH":
                 continue
 
             # Check, if the object has a material assigned to it.
@@ -240,7 +240,7 @@ class SUPEREASYANALYTICS_OT_highlight_non_manifold(Operator):
             ob.select_set(False)
 
             # Abort, if the current object is not a mesh.
-            if not ob.type == "MESH" or ob.hide_get():
+            if ob.type != "MESH" or ob.hide_get():
                 continue
 
             # Select the object and switch to Edit Mode.
@@ -285,7 +285,7 @@ class SUPEREASYANALYTICS_OT_highlight_ngons(Operator):
             ob.select_set(False)
 
             # Abort, if the current object is not a mesh.
-            if not ob.type == "MESH":
+            if ob.type != "MESH":
                 continue
 
             # Determine, whether the object has N-Gons.
