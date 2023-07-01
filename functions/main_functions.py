@@ -38,8 +38,18 @@ from .json_functions import (
 )
 
 
-# Check, if the default cube has been deleted.
 def check_for_cube(context: Context, data: bpy.data, path: str) -> bool:
+    """Check, if the default cube has been deleted.
+
+    Args:
+        context (Context): The current Blender Context.
+        data (bpy.data): The blend file data.
+        path (str): The path of the SEA data file.
+
+    Returns:
+        bool: Whether the default cube has been deleted.
+    """
+
     already_counted = context.scene.default_cube_deleted
     cube_deleted = False
 
@@ -63,18 +73,42 @@ def check_for_cube(context: Context, data: bpy.data, path: str) -> bool:
     return False
 
 
-# Get the usage time from yesterday.
 def get_yesterday(path: str) -> int:
+    """Get the usage time from yesterday.
+
+    Args:
+        path (str): The path of the SEA data file.
+
+    Returns:
+        int: The usage time from yesterday.
+    """
+
     return decode_json(path)["time_yesterday"]
 
 
-# Get the usage time from today.
 def get_today(path: str) -> float:
+    """Get the usage time from today.
+
+    Args:
+        path (str): The path of the SEA data file.
+
+    Returns:
+        float: The usage time from today.
+    """
+
     return round(decode_json(path)["time_today"] / 60)
 
 
-# Get the usage time from the last week
 def get_last_week(path: str) -> float:
+    """Get the usage time from the last week.
+
+    Args:
+        path (str): The path of the SEA data file.
+
+    Returns:
+        float: The usage time of the last week.
+    """
+
     DAY_IN_SECONDS = 60 * 60 * 24
     FORMAT = "%Y-%m-%d"
 
@@ -96,20 +130,44 @@ def get_last_week(path: str) -> float:
     return time_last_week
 
 
-# Get the count of deleted default cubes.
 def get_default_cubes(path: str) -> int:
+    """Get the count of deleted default cubes.
+
+    Args:
+        path (str): The path of the SEA data file.
+
+    Returns:
+        int: The amount of deleted default cubes.
+    """
+
     return int(decode_json(path)["default_cube"])
 
 
-# Get the count of undos.
 def get_undos(path: str) -> int:
+    """Get the count of undos.
+
+    Args:
+        path (str): The path of the SEA data file.
+
+    Returns:
+        int: The amount of total undos.
+    """
+
     data = decode_json(path)
 
     return data.get("undo_count", 0)
 
 
-# Get, which render device was used how often.
 def get_render_devices(path: str) -> tuple:
+    """Get, which render device was used how often.
+
+    Args:
+        path (str): The path of the SEA data file.
+
+    Returns:
+        tuple: The data, which render device was used how often.
+    """
+
     data = decode_json(path)["rendering_devices"]
 
     most_used = max(data, key=data.get)
@@ -117,8 +175,13 @@ def get_render_devices(path: str) -> tuple:
     return (most_used, data[most_used]), tuple(data.items())
 
 
-# Get the Blender File Data.
 def get_file_data() -> list:
+    """Get the Blender File Data as list.
+
+    Returns:
+        list: The Blender file data list.
+    """
+
     data = []
 
     # List of attributes to exclude from bpy.data
@@ -145,8 +208,14 @@ def get_file_data() -> list:
     return data
 
 
-# Highlight an object using a vertex color.
 def highlight_object(ob: Object, set_highlight_color=False) -> None:
+    """Highlight an object using a vertex color.
+
+    Args:
+        ob (Object): The object to highlight.
+        set_highlight_color (bool, optional): Whether to set or to unset the highlight color. Defaults to False.
+    """
+
     # Abort, if the given object isn't a mesh.
     if ob.type != "MESH":
         return
@@ -162,9 +231,9 @@ def highlight_object(ob: Object, set_highlight_color=False) -> None:
     vertex_color.active = True
 
     # Set the color, that the object should have.
-    color = (1, 1, 1, 1) # Transparent white
+    color = (1, 1, 1, 1)  # Transparent white
     if set_highlight_color:
-        color = (0, 1, 0, 0) # Green
+        color = (0, 1, 0, 0)  # Green
 
     # Check, if the vertex color needs to be changed.
     set_color = tuple(
@@ -178,8 +247,15 @@ def highlight_object(ob: Object, set_highlight_color=False) -> None:
         data.color = color
 
 
-# Set the viewport shading to vertex color for the highlighting.
 def set_viewport_shading(context: Context, type: str, color_type: str) -> None:
+    """Set the viewport shading to vertex color for the highlighting.
+
+    Args:
+        context (Context): The current Blender context.
+        type (str): The shading type (Blender specific).
+        color_type (str): The color type (Blender specific).
+    """
+
     area = next(area for area in context.screen.areas if area.type == 'VIEW_3D')
     space = next(space for space in area.spaces if space.type == 'VIEW_3D')
 
@@ -187,8 +263,16 @@ def set_viewport_shading(context: Context, type: str, color_type: str) -> None:
     space.shading.color_type = color_type
 
 
-# Get the device type when rendering.
 def get_rendering_device(context: Context) -> str:
+    """Get the device type used for rendering.
+
+    Args:
+        context (Context): The current Blender context.
+
+    Returns:
+        str: The used rendering device.
+    """
+
     # Assume, that all other rendering engines
     # (the built-in ones should do) use the GPU for rendering.
     if context.scene.render.engine != "CYCLES":
@@ -218,8 +302,16 @@ def get_rendering_device(context: Context) -> str:
     return "GPU"
 
 
-# Update the data to version 1.0.1!
 def update_json101(path: str) -> dict:
+    """Update the JSON data to version 1.0.1
+
+    Args:
+        path (str): The path to the JSON file.
+
+    Returns:
+        dict: The updated JSON data.
+    """
+
     # Get the SEA data
     j = decode_json(path)
 
@@ -241,8 +333,16 @@ def update_json101(path: str) -> dict:
     return j
 
 
-# Update the data to version 1.1.0!
 def update_json_and_data110(path: str) -> dict:
+    """Update the JSON data to version 1.1.0
+
+    Args:
+        path (str): The path to the JSON file.
+
+    Returns:
+        dict: The updated JSON data.
+    """
+
     # Decode the SEA data.
     j = decode_json(path)
 
@@ -266,6 +366,15 @@ def update_json_and_data110(path: str) -> dict:
 
 
 def update_json_and_data120(path: str) -> dict:
+    """Update the JSON data to version 1.2.0
+
+    Args:
+        path (str): The path to the JSON file.
+
+    Returns:
+        dict: The updated JSON data.
+    """
+
     FORMAT = "[%d, %m, %Y]"
 
     # Get the SEA data.
@@ -304,8 +413,13 @@ def update_json_and_data120(path: str) -> dict:
     return j
 
 
-# Checks the version of the JSON Data file and updates, if necessary.
 def update_json(path: str) -> None:
+    """Checks the version of the JSON Data file and updates, if necessary.
+
+    Args:
+        path (str): The path to the JSON file.
+    """
+
     # Get the SEA data.
     j = decode_json(path)
 

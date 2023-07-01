@@ -40,6 +40,8 @@ scene = bpy.types.Scene
 
 
 def register_props() -> None:
+    """Register custom scene properties."""
+
     scene.default_cube_deleted = BoolProperty(
         name="Default cube deleted",
         default=False
@@ -64,8 +66,13 @@ def register_props() -> None:
     )
 
 
-# Save the date and time on Blender Startup.
 def date_register(path: str) -> None:
+    """Save the date and time on Blender Startup.
+
+    Args:
+        path (str): The path of the SEA data file.
+    """
+
     # Get the SEA data.
     j = decode_json(path)
 
@@ -90,9 +97,14 @@ def date_register(path: str) -> None:
     encode_json(j, path)
 
 
-# Save the difference between the start date/time and the end date/time as Blender usage time.
-# Save the current date/time as new start date/time.
 def date_unregister(path: str) -> None:
+    """Save the difference between the start date/time and the end date/time as Blender usage time.
+    Save the current date/time as new start date/time.
+
+    Args:
+        path (str): The path of the SEA data file.
+    """
+
     THRESHHOLD = 30
 
     # Get the SEA data.

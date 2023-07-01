@@ -24,12 +24,31 @@ from os import path as p
 
 
 def decode_json(path: str) -> dict:
+    """Decode a JSON file.
+
+    Args:
+        path (str): The path of the JSON file.
+
+    Returns:
+        dict: The JSON data.
+    """
+
     with open(path) as f:
         j = json.load(f)
     return j
 
 
 def encode_json(j: dict, path: str) -> dict:
+    """Encode a JSON file.
+
+    Args:
+        j (dict): The JSON data.
+        path (str): The path to the JSON file.
+
+    Returns:
+        dict: The JSON data.
+    """
+
     with open(path, "w") as f:
         json.dump(j, f, indent=4)
     return j
