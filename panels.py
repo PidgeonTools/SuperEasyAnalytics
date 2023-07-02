@@ -16,16 +16,15 @@ import time
 
 from .functions.main_functions import (
     get_render_devices,
-    get_yesterday,
-    get_today,
-    get_last_week,
-    get_default_cubes,
-    get_undos,
     get_file_data
 )
 
 from .functions.register_functions import (
     date_unregister
+)
+
+from .functions.json_functions import (
+    decode_json
 )
 
 from .prefs import SUPEREASYANALYTICS_APT_Preferences as AddonPreferences
@@ -87,13 +86,15 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
                       "blender-analytics",
                       "data.json")
 
+        sea_data: dict = decode_json(path)
+
         layout: 'UILayout' = self.layout
 
         # Manipulate the time based on the display settings.
         display_unit = "minutes"
-        today = get_today(path)
-        yesterday = get_yesterday(path)
-        last_week = get_last_week(path)
+        today = round(sea_data.get("time_today") / 60)
+        yesterday = sea_data.get("time_yesterday", 0)
+        last_week = self.get_last_week(sea_data)
 
         if not prefs.display_unit:
             display_unit = "hours"
@@ -131,13 +132,13 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
 
         # Undo count.
         layout.label(
-            text=f"While using Blender, you've undone {get_undos(path)} steps.")
+            text=f"While using Blender, you've undone {sea_data.get('undo_count', 0)} steps.")
         layout.separator()
 
         # Default Cubes Display text.
         layout.label(text="Default Cubes:", icon="MESH_CUBE")
         layout.label(
-            text=f"You've deleted {get_default_cubes(path)} default cubes so far.")
+            text=f"You've deleted {int(sea_data.get('default_cube', 0))} default cubes so far.")
         layout.separator()
 
         layout.label(text="App Statistics:", icon='BLENDER')
@@ -149,6 +150,35 @@ class SUPEREASYANALYTICS_PT_usage_stats(Panel):
         # Blender App Stats.
         layout.label(
             text=f"You have {len(context.preferences.addons)} addons enabled.")
+
+    def get_last_week(self, sea_data: dict) -> float:
+        """Get the usage time from the last week.
+
+        Args:
+            path (str): The path of the SEA data file.
+
+        Returns:
+            float: The usage time of the last week.
+        """
+
+        DAY_IN_SECONDS = 60 * 60 * 24
+        FORMAT = "%Y-%m-%d"
+
+        current_time = time.time()  # Get the current time.
+
+        # Initialise time_last_week to today's usage time.
+        time_last_week = round(sea_data["time_today"] / 60)
+
+        for i in range(1, 8):  # yesterday to seven days ago
+            # Generate a string of the day i, using the format of the SEA data file.
+            day = time.strftime(FORMAT, time.localtime(
+                current_time - i * DAY_IN_SECONDS))
+
+            # Add the day i to the last weeks time, if it exists in the list.
+            if day in sea_data["dates_hours_alignment"].keys():
+                time_last_week += sea_data["dates_hours_alignment"][day]
+
+        return time_last_week
 
 
 class SUPEREASYANALYTICS_PT_scene_analytics(Panel):
