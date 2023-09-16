@@ -32,6 +32,8 @@ from os import path as p
 
 import time
 
+import json
+
 from .json_functions import (
     decode_json,
     encode_json
@@ -328,7 +330,7 @@ def update_json_and_data120(path: str) -> dict:
     return j
 
 
-def update_json(path: str) -> None:
+def upgrade_data_file(path: str) -> None:
     """Checks the version of the JSON Data file and updates, if necessary.
 
     Args:
@@ -349,3 +351,30 @@ def update_json(path: str) -> None:
     # Update the file to version 1.2.0
     if j["check_update"] == 110:
         j = update_json_and_data120(path)
+
+
+def create_data_file(path: str) -> None:
+    DEFAULT_DATA: dict = {
+        "default_cube": 0,
+        "undo_count": 0,
+        "start_time": 1581030000,
+        "rendering_devices": {
+            "CPU": 0,
+            "GPU": 0,
+            "Hybrid": 0
+        },
+        "date": [
+            7,
+            2,
+            2020
+        ],
+        "time_today": 0,
+        "time_yesterday": 0,
+        "dates_hours_alignment": {
+            "['Note: This means minutes since version 1.0.1']": 0.0
+        },
+        "check_update": 120
+    }
+
+    with open(path, "w+", encoding="utf-8") as f:
+        json.dump(DEFAULT_DATA, f, indent=4)

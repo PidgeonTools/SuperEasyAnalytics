@@ -97,7 +97,7 @@ def date_register(path: str) -> None:
     encode_json(j, path)
 
 
-def date_unregister(path: str) -> None:
+def update_time_of_use(path: str) -> None:
     """Save the difference between the start date/time and the end date/time as Blender usage time.
     Save the current date/time as new start date/time.
 

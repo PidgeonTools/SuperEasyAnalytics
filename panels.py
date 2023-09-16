@@ -20,7 +20,7 @@ from .functions.main_functions import (
 )
 
 from .functions.register_functions import (
-    date_unregister
+    update_time_of_use
 )
 
 from .functions.json_functions import (
@@ -60,7 +60,7 @@ class SUPEREASYANALYTICS_PT_main(Panel):
         layout: UILayout = self.layout
 
         # First, calculate the usage time.
-        date_unregister(path)
+        update_time_of_use(path)
 
         # Generic Display text.
         username = p.basename(p.expanduser("~"))

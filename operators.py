@@ -23,7 +23,7 @@ from .functions.main_functions import (
     set_viewport_shading
 )
 from .functions.register_functions import (
-    date_unregister
+    update_time_of_use
 )
 
 PATH = p.join(p.expanduser(
@@ -51,7 +51,7 @@ class SUPEREASYANALYTICS_OT_modal(Operator):
             show_graveyard_animation = check_for_cube(context, bpy.data, PATH)
 
         # Update the time counter.
-        date_unregister(PATH)
+        update_time_of_use(PATH)
 
         return {'PASS_THROUGH'}
 

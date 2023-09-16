@@ -36,11 +36,12 @@ from .functions import (
 )
 
 from .functions.main_functions import (
-    update_json,
+    upgrade_data_file,
+    create_data_file
 )
 
 from .functions.register_functions import (
-    date_unregister
+    update_time_of_use
 )
 
 bl_info = {
@@ -64,24 +65,19 @@ modules = (
     handler_functions
 )
 
-# Path to the Super Easy Analytics Data directory.
-PATH = p.join(p.expanduser(
-    "~"), "Blender Addons Data", "blender-analytics", "data.json")
+SEA_DATA_FOLDER = p.join(p.expanduser(
+    "~"), "Blender Addons Data", "blender-analytics")
+SEA_DATA_FILE = p.join(SEA_DATA_FOLDER, "data.json")
 
 
 def register() -> None:
-    # Create the Super Easy Analytics Data Directory, if it doesn't exist already.
-    if not p.isdir(p.dirname(PATH)):
-        os.makedirs(p.dirname(PATH))
+    if not p.isdir(SEA_DATA_FOLDER):
+        os.makedirs(SEA_DATA_FOLDER)
 
-    # Update the JSON Data file, if it doesn't work with the latest version of Super Easy Analytics.
-    if p.exists(PATH):
-        update_json(PATH)
-    else:  # Copy data.json to the Super Easy Analytics Data directory, if it doesn't already exist.
-        shutil.copyfile(p.join(p.dirname(__file__),
-                               "functions",
-                               "data.json"),
-                        PATH)
+    if p.exists(SEA_DATA_FILE):
+        upgrade_data_file(SEA_DATA_FILE)
+    else:
+        create_data_file(SEA_DATA_FILE)
 
     prefs.register(bl_info)
 
@@ -95,4 +91,4 @@ def unregister() -> None:
 
     prefs.unregister()
 
-    date_unregister(PATH)
+    update_time_of_use(SEA_DATA_FILE)
