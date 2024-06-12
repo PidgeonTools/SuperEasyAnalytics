@@ -19,6 +19,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import bpy
 
 import os
 from os import path as p
@@ -79,7 +80,10 @@ def register() -> None:
     else:
         create_data_file(SEA_DATA_FILE)
 
-    prefs.register(bl_info)
+    if bpy.app.version < (4, 2):
+        prefs.register_legacy(bl_info)
+    else:
+        prefs.register()
 
     for mod in modules:
         mod.register()

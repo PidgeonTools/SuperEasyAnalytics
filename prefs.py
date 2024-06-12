@@ -19,6 +19,7 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
+import bpy
 from bpy.props import (
     BoolProperty,
     FloatProperty,
@@ -142,13 +143,14 @@ class SUPEREASYANALYTICS_APT_Preferences(AddonPreferences):
         layout.prop(self, "freelancer_stats",
                     text="Enable Freelancer Statistics")
 
-        # col = layout.column() # works best if a column, or even just self.layout
-        mainrow = layout.row()
-        col = mainrow.column()
+        if bpy.app.version < (4, 2):
+            # col = layout.column() # works best if a column, or even just self.layout
+            mainrow = layout.row()
+            col = mainrow.column()
 
-        # updater draw function
-        # could also pass in col as third arg
-        addon_updater_ops.update_settings_ui(self, context)
+            # updater draw function
+            # could also pass in col as third arg
+            addon_updater_ops.update_settings_ui(self, context)
 
         # Alternate draw function, which is more condensed and can be
         # placed within an existing draw function. Only contains:
@@ -172,7 +174,7 @@ classes = (
 )
 
 
-def register(bl_info):
+def register_legacy(bl_info):
     # addon updater code and configurations
     # in case of broken version, try to register the updater first
     # so that users can revert back to a working version
@@ -184,9 +186,16 @@ def register(bl_info):
         register_class(cls)
 
 
+def register():
+    for cls in classes:
+        register_class(cls)
+
+
 def unregister():
-    # addon updater unregister
-    addon_updater_ops.unregister()
+    if bpy.app.version < (4, 2):
+        # addon updater unregister
+        addon_updater_ops.unregister()
+
     # register the example panel, to show updater buttons
     for cls in reversed(classes):
         unregister_class(cls)
