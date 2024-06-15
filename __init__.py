@@ -24,8 +24,6 @@ import bpy
 import os
 from os import path as p
 
-import shutil
-
 from . import (
     prefs,
     panels,

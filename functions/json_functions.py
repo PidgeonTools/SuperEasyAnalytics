@@ -20,7 +20,6 @@
 # ##### END GPL LICENSE BLOCK #####
 
 import json
-from os import path as p
 
 
 def decode_json(path: str) -> dict:

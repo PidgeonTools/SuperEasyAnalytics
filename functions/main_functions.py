@@ -20,7 +20,6 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
-from posixpath import split
 import bpy
 from bpy.types import (
     Context,
