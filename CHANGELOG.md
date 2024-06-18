@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.2.2 - 2021-06-16
+
+This release enables compatibility with the new extensions system in Blender 4.2
+
+---
+
 ## Version 1.2.1 - 2021-11-09
 ### Fixes
 - Fix: Fix broken Discord links.
